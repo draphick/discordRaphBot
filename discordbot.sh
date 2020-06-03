@@ -2,7 +2,7 @@
 if [ -z "$1" ]; then
   debug="n"
   dockershloc=$dockershloc
-  name='discordbot'
+  name='discordraphbot'
   . ../dockerSource.sh
   echo "Running prod"
 else
@@ -10,7 +10,7 @@ else
   # dockershloc="/Users/rgallardo/git/draphick"
   . ../dockerSource.sh
   dockershloc=$dockershloc
-  name='devdiscordbot'
+  name='discordraphbot'
   echo "Running dev"
 fi
 
@@ -20,8 +20,8 @@ docker run \
   -d \
   --restart=always \
   --name=$name \
-  -v $dockershloc/discordbot:/discordbot:ro \
+  -v $dockershloc/discordRaphBot:/discordbot:ro \
   -v /etc/timezone:/etc/timezone:ro \
   -v /etc/localtime:/etc/localtime:ro \
   -e debug=$debug \
-  discordbot
+  discordraphbot
