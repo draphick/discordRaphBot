@@ -1,0 +1,27 @@
+#!/bin/bash
+if [ -z "$1" ]; then
+  debug="n"
+  dockershloc=$dockershloc
+  name='discordbot'
+  . ../dockerSource.sh
+  echo "Running prod"
+else
+  debug="y"
+  # dockershloc="/Users/rgallardo/git/draphick"
+  . ../dockerSource.sh
+  dockershloc=$dockershloc
+  name='devdiscordbot'
+  echo "Running dev"
+fi
+
+docker stop $name
+docker rm $name
+docker run \
+  -d \
+  --restart=always \
+  --name=$name \
+  -v $dockershloc/discordbot:/discordbot:ro \
+  -v /etc/timezone:/etc/timezone:ro \
+  -v /etc/localtime:/etc/localtime:ro \
+  -e debug=$debug \
+  discordbot

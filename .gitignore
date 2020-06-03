@@ -1,0 +1,4 @@
+virtenv_discordbot
+.env
+cred_file.json
+pyTest.py
