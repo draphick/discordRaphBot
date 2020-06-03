@@ -191,6 +191,7 @@ async def on_message(message):
         rofl = random.choice(allurls)
         if not isinstance(message.channel, discord.abc.PrivateChannel):
             await message.delete()
+        await message.channel.send(message.author.mention + " IS LAUGHING!!!")
         await message.channel.send(rofl)
         del allrofl
 
