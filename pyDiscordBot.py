@@ -406,7 +406,7 @@ async def on_message(message):
             The $requestbotid is a role on my server that I created
             for users to ping when they want to request a movie
             or TV show on my Plex server.
-            Right now it's auto doing the download for me.  It will
+            Right now it's _not_ auto doing the download for me.  It will
             just send a DM to me with who requested it and what they requested.
             I didn't wanted it auto downloading in case users are
             requesting full 20 season shows or movies that would be
