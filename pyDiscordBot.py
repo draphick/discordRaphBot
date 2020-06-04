@@ -172,28 +172,28 @@ async def on_message(message):
         ro{card|monster|item} {search terms} - Search the Ragnarok Mobile database.  eg. `romonster dokebi`
         tr {translate these words} - Translate english to Tagalog.  eg. `tr I'm hungry`""")
 
-    if all(c in "lo" for c in message.content.lower()):
-        """
-            If someone sends a message of only l and o
-            such as LOLLLOLOLLOLOL
-            or LOLLLLLL
-            or LOL
-            it will send a random giphy searching rofl or lol
-        """
-        searchterms = ['rofl', 'lol','laughing']
-        search = random.choice(searchterms)
-        allurls = []
-        allrofl = requests.get('http://api.giphy.com/v1/gifs/search?q=' + search + '&api_key=' + giphyapi + '&limit=10', verify=False)
-        allgifs = allrofl.json()
-        allgifs = allgifs['data']
-        for gif in allgifs:
-            allurls.append(gif['url'])
-        rofl = random.choice(allurls)
-        if not isinstance(message.channel, discord.abc.PrivateChannel):
-            await message.delete()
-        await message.channel.send(message.author.mention + " IS LAUGHING!!!")
-        await message.channel.send(rofl)
-        del allrofl
+    # if all(c in "lo" for c in message.content.lower()):
+    #     """
+    #         If someone sends a message of only l and o
+    #         such as LOLLLOLOLLOLOL
+    #         or LOLLLLLL
+    #         or LOL
+    #         it will send a random giphy searching rofl or lol
+    #     """
+    #     searchterms = ['rofl', 'lol','laughing']
+    #     search = random.choice(searchterms)
+    #     allurls = []
+    #     allrofl = requests.get('http://api.giphy.com/v1/gifs/search?q=' + search + '&api_key=' + giphyapi + '&limit=10', verify=False)
+    #     allgifs = allrofl.json()
+    #     allgifs = allgifs['data']
+    #     for gif in allgifs:
+    #         allurls.append(gif['url'])
+    #     rofl = random.choice(allurls)
+    #     if not isinstance(message.channel, discord.abc.PrivateChannel):
+    #         await message.delete()
+    #     await message.channel.send(message.author.mention + " IS LAUGHING!!!")
+    #     await message.channel.send(rofl)
+    #     del allrofl
 
     if message.content.lower().startswith('dl'):
         """ 
