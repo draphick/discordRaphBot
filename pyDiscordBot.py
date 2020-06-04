@@ -221,6 +221,7 @@ async def on_message(message):
         d{1-99999} - Roll a {number} sided dice.  The number can be 5 digits long.
         !draw {movies|action} - Lets play Telestrations!  Modify these .json to add/delete options: `https://github.com/draphick/jsonfiles`
         ro{card|monster|item} {search terms} - Search the Ragnarok Mobile database.  eg. `romonster dokebi`
+        acget {search terms} - Search villagerdb for items, villagers, recipes, anything.  eg `acget bamboo hat`
         tr {translate these words} - Translate english to Tagalog.  eg. `tr I'm hungry`""")
 
     # if all(c in "lo" for c in message.content.lower()):
