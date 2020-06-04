@@ -152,6 +152,57 @@ def writerow(col1 = None, col2 = None, col3 = None, col4 = None, col5 = None, co
     sheet.insert_row(rowdata, lastrow)
     data = sheet.row_values(lastrow)    
 
+def acnhsearch(searchterm):
+    search = searchterm.replace(" ", "+")
+    url = "https://villagerdb.com/search?game=nh&q=" + search
+    itemdata = {}
+    r = requests.get(url, verify=False)
+    soup = BeautifulSoup(r.text, 'lxml')
+    allresults = soup.find("div",{"id":"entity-browser"})["data-initial-state"]
+    jsonresults = json.loads(allresults)
+    totalcount = jsonresults['totalCount']
+    maxresults = 5
+    counter = 0
+    for i in jsonresults['results']:
+        if counter < maxresults:
+            counter = counter + 1
+            name = i['name']
+            url = "https://villagerdb.com" + i['url']
+            # thumb = "https://villagerdb.com" + i['image']['thumb']
+            itemdata[name] = {}
+            itemdata[name]['Website Link'] = url
+            # itemdata[name]['Image'] = thumb            
+    return itemdata
+   
+def acnhget(searchterm):
+    search = searchterm.replace(" ", "-")
+    url = "https://villagerdb.com/item/" + search
+    r = requests.get(url, verify=False)
+    if r.status_code == 404:
+        itemdata = acnhsearch(searchterm)
+    else: 
+        itemdata = {}
+        soup = BeautifulSoup(r.text, 'lxml')
+        namespace = soup.select("h1")[0].text.strip()
+        itemdata[namespace] = {}
+        tab = soup.find("table",{"class":"table item-game-data"}).select("tbody tr")
+        # imagebloc = soup.find("div",{"class":"entity-dropdown-init d-inline-block"})["data-image"]
+        # jsonresults = json.loads(imagebloc)
+        itemdata[namespace]['Website Link'] = url
+        # itemdata[namespace]['Image'] = "https://villagerdb.com" + jsonresults['thumb']
+        for row in tab:
+            line = row.select("td")
+            col1 = line[0].text.strip()
+            itemdata[namespace][col1] = []
+            if line[1].select("li, div"):
+                for data in line[1].select("li, div"):
+                    value = data.text.strip().replace("  ", "").replace("\n","")
+                    itemdata[namespace][col1].append(value)
+            else:
+                value = line[1].text
+                itemdata[namespace][col1].append(value)
+    return itemdata
+
 @client.event
 async def on_message(message):
     # we do not want the bot to reply to itself
@@ -360,6 +411,36 @@ async def on_message(message):
         else:
             await message.channel.send("Searched for **" + splitmsg[1] + "** and found zero results.")
 
+    if message.content.lower().startswith('acget'):
+        """
+            Search Villager DB for an item in Animal Crossing!
+        """
+        splittingmsg = message.content.lower().split(" ", 1)
+        splitmsg = splittingmsg[1]
+        results = acnhget(splitmsg)
+        fullmessage = "Here's what I found: \n"
+        if len(results) > 0:
+            for key in results:
+                # Item name
+                countstring = len(key) + 10
+                block = ""
+                for x in range(countstring):
+                    block = block + "-"
+                fullmessage = fullmessage + "`[[   " + key.upper() + "   ]]" + '\n' + block + '\n`'
+                for value in results[key]:
+                    # Sub Level 1
+                    fullmessage = fullmessage + '\t' + "**" + value + "**" + '\n'
+                    if isinstance(results[key][value], list):
+                        for i in results[key][value]:
+                            # Sub level 2 if it's a list
+                            fullmessage = fullmessage + '\t\t' +  i + '\n'
+                    else:
+                        # Sub level 2 if it's just a string
+                        fullmessage = fullmessage + '\t\t' + results[key][value] + '\n'
+        else:
+            fullmessage = "Couldn't find anything looking for: \n\t" + splitmsg + "\nTry again."
+        await message.channel.send(fullmessage)
+  
 ########################## Some personal hidden bot commands
     if message.content.lower().startswith('rgservers'):
         """
