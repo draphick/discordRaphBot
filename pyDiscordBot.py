@@ -21,12 +21,14 @@ if os.environ['debug'] == "y":
     tagalogsheet = os.getenv('testsheet')
     gastracksheet = os.getenv('testsheet')
     addtracksheet = os.getenv('testsheet')
+    workouttracksheet = os.getenv('workouttracksheet')
 else:
     # PROD
     TOKEN = os.getenv('DISCORD_TOKEN_PROD')
     tagalogsheet = os.getenv('tagalogsheet')
     gastracksheet = os.getenv('gastracksheet')
     addtracksheet = os.getenv('addtracksheet')
+    workouttracksheet = os.getenv('workouttracksheet')
 
 botlink = os.getenv('botlink')
 sonarrapi = os.getenv('sonarrapi')
@@ -91,16 +93,16 @@ def getplex(title, showmovie, year = None):
                     answer.update({counter:newtitle})
     return(answer)
 
-def googleauth(sheet):
+def googleauth(sheet,sheettab = 'Sheet1'):
     # use creds to create a client to interact with the Google Drive API
     scope = ['https://www.googleapis.com/auth/spreadsheets','https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
     creds = ServiceAccountCredentials.from_json_keyfile_name('cred_file.json', scope)
     gclient = gspread.authorize(creds)
-    sheet = gclient.open(sheet).sheet1
+    sheet = gclient.open(sheet).worksheet(sheettab)
     return(sheet)
 
-def getrow(more,total,sheet):
-    sheet = googleauth(sheet)
+def getrow(more,total,sheet,sheettab = 'Sheet1'):
+    sheet = googleauth(sheet,sheettab)
     if more == 'last':
         returnrow = {}
         lastrowemptyrow = sheet.row_count
@@ -140,8 +142,8 @@ def updatecell(row,column,value,sheet):
 
     sheet.update_cell(row,col,value)
 
-def writerow(col1 = None, col2 = None, col3 = None, col4 = None, col5 = None, col6 = None, col7 = None, col8 = None, sheet = 'testsheet'):
-    sheet = googleauth(sheet)
+def writerow(col1 = None, col2 = None, col3 = None, col4 = None, col5 = None, col6 = None, col7 = None, col8 = None, sheet = 'testsheet', sheettab = 'Sheet1'):
+    sheet = googleauth(sheet,sheettab)
 
     if col1 == 'now':
         col1 = datetime.date.today().strftime("%Y/%m/%d")
@@ -149,7 +151,7 @@ def writerow(col1 = None, col2 = None, col3 = None, col4 = None, col5 = None, co
         col2 = datetime.datetime.now().strftime("%H:%M")
     lastrow = sheet.row_count
     rowdata = [col1, col2, col3, col4, col5, col6, col7, col8]
-    sheet.insert_row(rowdata, lastrow)
+    sheet.insert_row(rowdata, lastrow, value_input_option='USER_ENTERED')
     data = sheet.row_values(lastrow)    
 
 def acnhsearch(searchterm):
@@ -634,6 +636,49 @@ async def on_message(message):
         else:
             await message.channel.send("Did you want to add or view?\n Here are your columns:```\nDate\nOdo\nTrip\nDash\nGal\nPrice```")
 
+    if message.content.lower().startswith('!fatadd'):
+        """
+            doing some workout tracking
+            gsheet query:
+            ={
+                QUERY(
+                    RaphTracking!$A$1:$D,
+                    "select C, sum(D) where C is not null and A = date '"&TEXT(TODAY(),"yyyy-mm-dd")&"' group by C order by sum(D) desc label sum(D) 'Reps'",
+                    1
+                )
+            }
+        """
+        splitspace = message.content.lower().split(" ", 1)
+        command = splitspace[1].split(" ")
+        workouts = [
+            "pushups",
+            "situps",
+            "squats",
+            "pullups"
+        ]
+        if len(command) == 2:
+            if command[0] not in workouts:
+                await message.channel.send("Wrong workout type")
+            else:
+                writerow("now","now",command[0], command[1], None, None, None, None,workouttracksheet,message.author.name.lower() + "tracking")
+                await message.channel.send("Adding to " + message.author.name + "s workout sheet " + str(command[1]) + " " + command[0])
+        else:
+            await message.channel.send("Missing or too many arguments.  Provide a workout type and value\n Example: `!fatadd pushup 5` \n Available workout types: pushups, pullups, situps, squats")
+
+    if message.content.lower().startswith('!fatinfo'):
+        """
+            checking workout
+        """
+        allrows = getrow("last",5,workouttracksheet,message.author.name.lower())
+        msg = "**FAT STATS BRO:** \n```"
+        msg = msg + "\nExercise || Reps\n"
+        for key,value in allrows.items():
+            try:
+                msg = msg + str(allrows[key][0]) + ":\n   " + str(allrows[key][1]) + "\n"
+            except Exception as e:
+                continue
+        msg = msg + "```\n **STILL FAT BRO**"
+        await message.channel.send(msg)
 
 @client.event
 async def on_ready():
