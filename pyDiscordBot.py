@@ -654,7 +654,8 @@ async def on_message(message):
             "pushups",
             "situps",
             "squats",
-            "pullups"
+            "pullups",
+            "weight"
         ]
         if len(command) == 2:
             if command[0] not in workouts:
