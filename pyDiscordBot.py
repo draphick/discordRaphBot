@@ -21,7 +21,7 @@ if os.environ['debug'] == "y":
     tagalogsheet = os.getenv('testsheet')
     gastracksheet = os.getenv('testsheet')
     addtracksheet = os.getenv('testsheet')
-    workouttracksheet = os.getenv('workouttracksheet')
+    workouttracksheet = os.getenv('testsheet')
 else:
     # PROD
     TOKEN = os.getenv('DISCORD_TOKEN_PROD')
@@ -98,7 +98,12 @@ def googleauth(sheet,sheettab = 'Sheet1'):
     scope = ['https://www.googleapis.com/auth/spreadsheets','https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
     creds = ServiceAccountCredentials.from_json_keyfile_name('cred_file.json', scope)
     gclient = gspread.authorize(creds)
-    sheet = gclient.open(sheet).worksheet(sheettab)
+    spreadsheet = gclient.open(sheet)
+    allsheets = [i.title for i in spreadsheet.worksheets()]
+    if sheettab in allsheets:
+        sheet = spreadsheet.worksheet(sheettab)
+    else:
+        sheet = spreadsheet.add_worksheet(title=sheettab, rows="1", cols="8") 
     return(sheet)
 
 def getrow(more,total,sheet,sheettab = 'Sheet1'):
