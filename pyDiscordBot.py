@@ -686,7 +686,7 @@ async def on_message(message):
                     msg = msg + "\n   " + workout
                 await message.channel.send(msg)
 
-        if message.content.lower().startswith('!fatinfo'):
+        elif message.content.lower().startswith('!fatinfo'):
             """
                 checking workout
             """
@@ -713,6 +713,8 @@ async def on_message(message):
                 msg = "No user tracksheet data available for " + getuser
             
             await message.channel.send(msg)
+        else:
+            await message.channel.send("Did you want `!fatinfo` or `!fatadd`?")
 
 @client.event
 async def on_ready():
