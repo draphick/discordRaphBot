@@ -690,16 +690,28 @@ async def on_message(message):
             """
                 checking workout
             """
-            allrows = getrow("last",len(workouts) + 2,workouttracksheet,message.author.name.lower())
-            msg = "**FAT STATS BRO:** \n```"
-            msg = msg + "\n----\n"
-            for key,value in allrows.items():
-                try:
-                    if allrows[key][0] in workouts:
-                        msg = msg + str(allrows[key][0]) + ":\n   " + str(allrows[key][1]) + "\n"
-                except Exception as e:
-                    continue
-            msg = msg + "```\n **STILL FAT BRO**"
+            getuser = message.author.name.lower()
+            try:
+                splitspace = message.content.lower().split(" ", 1)
+                command = splitspace[1].split(" ")
+                getuser = command[0]
+            except Exception as e:
+                print('fatinfo error - no username sent')
+                print(e)
+            try:
+                allrows = getrow("last",len(workouts) + 2,workouttracksheet,getuser)
+                msg = "**FAT STATS BRO:** \n```"
+                msg = msg + "\n----\n"
+                for key,value in allrows.items():
+                    try:
+                        if allrows[key][0] in workouts:
+                            msg = msg + str(allrows[key][0]) + ":\n   " + str(allrows[key][1]) + "\n"
+                    except Exception as e:
+                        continue
+                msg = msg + "```\n **STILL FAT BRO**"                
+            except Exception as e:
+                msg = "No user tracksheet data available for " + getuser
+            
             await message.channel.send(msg)
 
 @client.event
