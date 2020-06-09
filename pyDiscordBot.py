@@ -677,7 +677,7 @@ async def on_message(message):
         """
         allrows = getrow("last",6,workouttracksheet,message.author.name.lower())
         msg = "**FAT STATS BRO:** \n```"
-        msg = msg + "\nExercise:\n   Reps\n"
+        msg = msg + "\n----\n"
         for key,value in allrows.items():
             try:
                 msg = msg + str(allrows[key][0]) + ":\n   " + str(allrows[key][1]) + "\n"
