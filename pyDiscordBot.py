@@ -671,7 +671,15 @@ async def on_message(message):
                     await message.channel.send(msg)
                 else:
                     writerow("now","now",command[0], command[1], None, None, None, None,workouttracksheet,message.author.name.lower() + "tracking")
-                    await message.channel.send("Adding to " + message.author.name + "s workout sheet " + str(command[1]) + " " + command[0])
+                    allrows = getrow("last",len(workouts) + 2,workouttracksheet,message.author.name.lower())
+                    msg = "Added to " + message.author.name + "'s workout sheet: " + command[0] + " " + str(command[1]) + "\n"
+                    for key,value in allrows.items():
+                        try:
+                            if allrows[key][0] == command[0]:
+                                msg = msg + "Current total " + str(allrows[key][0]) + ": **" + str(allrows[key][1]) + "**"
+                        except Exception as e:
+                            continue
+                    await message.channel.send(msg)
             else:
                 msg = "Missing or too many arguments.  Provide a workout type and value\n Example: `!fatadd pushups 5` \n Available workout types: "
                 for workout in workouts:
