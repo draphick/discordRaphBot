@@ -653,13 +653,14 @@ async def on_message(message):
             """
                 doing some workout tracking
                 gsheet query:
-                ={
+                =IFERROR(
                     QUERY(
-                        RaphTracking!$A$1:$D,
-                        "select C, sum(D) where C is not null and A = date '"&TEXT(TODAY(),"yyyy-mm-dd")&"' group by C order by sum(D) desc label sum(D) 'Reps'",
-                        1
-                    )
-                }
+                        raphtracking!$A1:$D,
+                        "select sum(D) where C = 'squats' and A = date '"&TEXT(TODAY(),"yyyy-mm-dd")&"' group by C label sum(D)''", 
+                        0
+                    ),
+                    0
+                )
             """
             splitspace = message.content.lower().split(" ", 1)
             command = splitspace[1].split(" ")
@@ -700,7 +701,7 @@ async def on_message(message):
                 print(e)
             try:
                 allrows = getrow("last",len(workouts) + 2,workouttracksheet,getuser)
-                msg = "**FAT STATS BRO:** \n```"
+                msg = "**PHAT STATS BRO:** \n```"
                 msg = msg + "\n----\n"
                 for key,value in allrows.items():
                     try:
