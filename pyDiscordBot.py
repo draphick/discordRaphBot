@@ -21,7 +21,7 @@ if os.environ['debug'] == "y":
     tagalogsheet = os.getenv('testsheet')
     gastracksheet = os.getenv('testsheet')
     addtracksheet = os.getenv('testsheet')
-    workouttracksheet = os.getenv('testsheet')
+    workouttracksheet = os.getenv('workouttracksheet')
 else:
     # PROD
     TOKEN = os.getenv('DISCORD_TOKEN_PROD')
@@ -641,50 +641,58 @@ async def on_message(message):
         else:
             await message.channel.send("Did you want to add or view?\n Here are your columns:```\nDate\nOdo\nTrip\nDash\nGal\nPrice```")
 
-    if message.content.lower().startswith('!fatadd'):
-        """
-            doing some workout tracking
-            gsheet query:
-            ={
-                QUERY(
-                    RaphTracking!$A$1:$D,
-                    "select C, sum(D) where C is not null and A = date '"&TEXT(TODAY(),"yyyy-mm-dd")&"' group by C order by sum(D) desc label sum(D) 'Reps'",
-                    1
-                )
-            }
-        """
-        splitspace = message.content.lower().split(" ", 1)
-        command = splitspace[1].split(" ")
+    if message.content.lower().startswith('!fat'):
         workouts = [
-            "pushups",
-            "situps",
-            "squats",
-            "pullups",
-            "weight"
+            'pushups',
+            'pullups',
+            'situps',
+            'squats',
+            'weight'
         ]
-        if len(command) == 2:
-            if command[0] not in workouts:
-                await message.channel.send("Wrong workout type")
+        if message.content.lower().startswith('!fatadd'):
+            """
+                doing some workout tracking
+                gsheet query:
+                ={
+                    QUERY(
+                        RaphTracking!$A$1:$D,
+                        "select C, sum(D) where C is not null and A = date '"&TEXT(TODAY(),"yyyy-mm-dd")&"' group by C order by sum(D) desc label sum(D) 'Reps'",
+                        1
+                    )
+                }
+            """
+            splitspace = message.content.lower().split(" ", 1)
+            command = splitspace[1].split(" ")
+            if len(command) == 2:
+                if command[0] not in workouts:
+                    msg = "Wrong workout type, must be one of:"
+                    for workout in workouts:
+                        msg = msg + "\n   " + workout
+                    await message.channel.send(msg)
+                else:
+                    writerow("now","now",command[0], command[1], None, None, None, None,workouttracksheet,message.author.name.lower() + "tracking")
+                    await message.channel.send("Adding to " + message.author.name + "s workout sheet " + str(command[1]) + " " + command[0])
             else:
-                writerow("now","now",command[0], command[1], None, None, None, None,workouttracksheet,message.author.name.lower() + "tracking")
-                await message.channel.send("Adding to " + message.author.name + "s workout sheet " + str(command[1]) + " " + command[0])
-        else:
-            await message.channel.send("Missing or too many arguments.  Provide a workout type and value\n Example: `!fatadd pushup 5` \n Available workout types: pushups, pullups, situps, squats")
+                msg = "Missing or too many arguments.  Provide a workout type and value\n Example: `!fatadd pushups 5` \n Available workout types: "
+                for workout in workouts:
+                    msg = msg + "\n   " + workout
+                await message.channel.send(msg)
 
-    if message.content.lower().startswith('!fatinfo'):
-        """
-            checking workout
-        """
-        allrows = getrow("last",6,workouttracksheet,message.author.name.lower())
-        msg = "**FAT STATS BRO:** \n```"
-        msg = msg + "\n----\n"
-        for key,value in allrows.items():
-            try:
-                msg = msg + str(allrows[key][0]) + ":\n   " + str(allrows[key][1]) + "\n"
-            except Exception as e:
-                continue
-        msg = msg + "```\n **STILL FAT BRO**"
-        await message.channel.send(msg)
+        if message.content.lower().startswith('!fatinfo'):
+            """
+                checking workout
+            """
+            allrows = getrow("last",len(workouts) + 2,workouttracksheet,message.author.name.lower())
+            msg = "**FAT STATS BRO:** \n```"
+            msg = msg + "\n----\n"
+            for key,value in allrows.items():
+                try:
+                    if allrows[key][0] in workouts:
+                        msg = msg + str(allrows[key][0]) + ":\n   " + str(allrows[key][1]) + "\n"
+                except Exception as e:
+                    continue
+            msg = msg + "```\n **STILL FAT BRO**"
+            await message.channel.send(msg)
 
 @client.event
 async def on_ready():
