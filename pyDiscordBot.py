@@ -657,13 +657,13 @@ async def on_message(message):
             await message.channel.send("Did you want to add or view?\n Here are your columns:```\nDate\nOdo\nTrip\nDash\nGal\nPrice```")
 
     if message.content.lower().startswith('!fat'):
-        workouts = [
-            'pushups',
-            'pullups',
-            'situps',
-            'squats',
-            'weight'
-        ]
+        workouts = {
+            'pushups' : 100,
+            'pullups' : 50,
+            'situps' : 100,
+            'squats' : 100,
+            'weight' : 90
+        }
         if message.content.lower().startswith('!fatadd'):
             """
                 doing some workout tracking
@@ -680,9 +680,9 @@ async def on_message(message):
             splitspace = message.content.lower().split(" ", 1)
             command = splitspace[1].split(" ")
             if len(command) == 2:
-                if command[0] not in workouts:
+                if command[0] not in workouts.keys():
                     msg = "Wrong workout type, must be one of:"
-                    for workout in workouts:
+                    for workout in workouts.keys():
                         msg = msg + "\n   " + workout
                     await message.channel.send(msg)
                 else:
@@ -698,13 +698,19 @@ async def on_message(message):
                     for name,total in allstats.items():
                         try:
                             if name == command[0]:
-                                msg = msg + "Current total " + name + ": **" + str(allstats[command[0]]) + "**"
+                                msg = msg + "Current total " + name + ": **" + str(total) + "**"
+                                if total < workouts[name]:
+                                    left = workouts[name] - total
+                                    msg = msg + "\n You still have " + str(left) + " " + " left to do!"
+                                elif total >= workouts[name]:
+                                    msg = msg + "\n You hit your " + name + " goal, congrats!"
+
                         except Exception as e:
                             continue
                     await message.channel.send(msg)
             else:
                 msg = "Missing or too many arguments.  Provide a workout type and value\n Example: `!fatadd pushups 5` \n Available workout types: "
-                for workout in workouts:
+                for workout in workouts.keys():
                     msg = msg + "\n   " + workout
                 await message.channel.send(msg)
         elif message.content.lower().startswith('!fatfood'):
@@ -768,7 +774,7 @@ async def on_message(message):
                 msg = msg + "\n----\n"
                 for name,total in allstats.items():
                     try:
-                        if name in workouts:
+                        if name in workouts.keys():
                             msg = msg + str(name) + ":\n   " + str(total) + "\n"
                         elif name == 'food':
                             msg = msg + str(name) + ":\n   " + str(total) + "/20\n"
