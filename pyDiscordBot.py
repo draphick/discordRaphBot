@@ -742,7 +742,7 @@ async def on_message(message):
                 msg = "No user tracksheet data available for " + getuser
             await message.channel.send(msg)
         else:
-            await message.channel.send("Did you want `!fatinfo` or `!fatadd`?")
+            await message.channel.send("Did you want `!fatinfo`, `!fatadd` or `!fatfood`?")
 
 @client.event
 async def on_ready():
