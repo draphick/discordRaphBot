@@ -575,7 +575,7 @@ async def on_message(message):
                 if len(args) != 8:
                     await message.channel.send("Invalid amount of columns, try again!  Remember these columns: ```\ndate\ntime\nfood\ndrink\ndosage\nmr\nduration\nnotes```")
                 else:                    
-                    writerow(args[0],args[1],args[2],args[3],args[4],args[5],args[6],args[7],addtracksheet)
+                    writerow(args[0],args[1],args[2],args[3],args[4],args[5],args[6],args[7],addtracksheet,message.author.name.lower() + "tracking")
                     await message.channel.send("New row added!\n `addtrack view last#1` to check it out!")
                     allrows = getrow("last",1,addtracksheet)
                     for key,value in allrows.items():
@@ -599,7 +599,7 @@ async def on_message(message):
                 await message.channel.send("Did you want to add, view, or update?\n If using `udpate` make sure to provide one of the columns:```\ndate\ntime\nfood\ndrink\ndosage\nmr\nduration\nnotes```")
         else:
             if 'one' in command:          
-                writerow('now','now','none','water','15',None,None,None,addtracksheet)
+                writerow('now','now','none','water','15',None,None,None,addtracksheet,message.author.name.lower() + "tracking")
                 await message.channel.send("New row added!\n `addtrack view last#1` to check it out!")
                 allrows = getrow("last",1,addtracksheet)
                 for key,value in allrows.items():
