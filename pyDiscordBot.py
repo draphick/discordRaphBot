@@ -94,6 +94,7 @@ def getplex(title, showmovie, year = None):
     return(answer)
 
 def googleauth(sheet,sheettab = 'Sheet1'):
+    # https://gspread.readthedocs.io/en/latest/
     # use creds to create a client to interact with the Google Drive API
     scope = ['https://www.googleapis.com/auth/spreadsheets','https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
     creds = ServiceAccountCredentials.from_json_keyfile_name('cred_file.json', scope)
@@ -124,9 +125,22 @@ def getrow(more,total = None,sheet = None,sheettab = 'Sheet1'):
         returnrow.update({total:rowvalue})
         return(returnrow)
     elif more == 'all':
-        returnrow = {}
         rowvalue = sheet.get_all_values()
         return(rowvalue)
+
+def getgsheet(sheet = 'testsheet',sheettab = 'Sheet1',row = None, last = False):
+    sheet = googleauth(sheet,sheettab)
+    if row:
+        if last:
+            allcolvalues = list(filter(None, sheet.col_values(1)))
+            lastrownum = str(len(allcolvalues))
+            rowvalue = sheet.row_values(lastrownum)
+        else:
+            rowvalue = sheet.row_values(row)
+    else:
+        rowvalue = sheet.get_all_records()
+    return(rowvalue)
+    
 
 def updatecell(row,column,value,sheet):
     sheet = googleauth(sheet)
@@ -564,48 +578,46 @@ async def on_message(message):
             await message.add_reaction("\U0000274E")
     
     if message.content.lower().startswith('addtrack '):
-        """
-            This is used to quickly track some meds when I take them.
-        """
-        splitspace = message.content.lower().split(" ", 1)
-        command = splitspace[1].split(" ", 1)
-        if len(command) == 2:
-            args = command[1].split("#")
-            if 'add' in command:
-                if len(args) != 8:
-                    await message.channel.send("Invalid amount of columns, try again!  Remember these columns: ```\ndate\ntime\nfood\ndrink\ndosage\nmr\nduration\nnotes```")
-                else:                    
-                    writerow(args[0],args[1],args[2],args[3],args[4],args[5],args[6],args[7],addtracksheet,message.author.name.lower() + "tracking")
-                    await message.channel.send("New row added!\n `addtrack view last#1` to check it out!")
-                    allrows = getrow("last",1,addtracksheet)
-                    for key,value in allrows.items():
-                            await message.channel.send("Row: " + str(key) + "\n-- " + str(value))                            
-            elif 'view' in command:
-                if len(args) != 2:
-                    await message.channel.send("Too many / not enough arguments.  Ex: \n`addtrack view only#26` \n`addtrack view last#5`")
-                else:
-                    allrows = getrow(args[0],int(args[1]),addtracksheet)
-                    for key,value in allrows.items():
-                        await message.channel.send("Row: " + str(key) + "\n-- " + str(value))
-            elif 'update' in command:
-                if len(args) != 3:
-                    await message.channel.send("Too many / not enough arguments, you need to provide `sheet update row#columnname#newvlue`")
-                updatecell(int(args[0]),args[1],args[2],addtracksheet)
-                await message.channel.send("Update sent!")
-                allrows = getrow("only",int(args[0]),addtracksheet)
-                for key,value in allrows.items():
-                        await message.channel.send("Row: " + str(key) + "\n-- " + str(value))
-            else:
-                await message.channel.send("Did you want to add, view, or update?\n If using `udpate` make sure to provide one of the columns:```\ndate\ntime\nfood\ndrink\ndosage\nmr\nduration\nnotes```")
-        else:
-            if 'one' in command:          
-                writerow('now','now','none','water','15',None,None,None,addtracksheet,message.author.name.lower() + "tracking")
-                await message.channel.send("New row added!\n `addtrack view last#1` to check it out!")
-                allrows = getrow("last",1,addtracksheet)
-                for key,value in allrows.items():
-                        await message.channel.send("Row: " + str(key) + "\n-- " + str(value))
-            else:
-                await message.channel.send("Did you want to add, view, or update?\n If using `udpate` make sure to provide one of the columns:```\ndate\ntime\nfood\ndrink\ndosage\nmr\nduration\nnotes```")
+        # """
+        #     This is used to quickly track some meds when I take them.
+        # """
+        # splitspace = message.content.lower().split(" ", 1)
+        # command = splitspace[1].split(" ", 1)
+        # if len(command) == 2:
+        #     args = command[1].split("#")
+        #     if 'add' in command:
+        #         if len(args) != 8:
+        #             await message.channel.send("Invalid amount of columns, try again!  Remember these columns: ```\ndate\ntime\nfood\ndrink\ndosage\nmr\nduration\nnotes```")
+        #         else:                    
+        #             writerow(args[0],args[1],args[2],args[3],args[4],args[5],args[6],args[7],addtracksheet,message.author.name.lower() + "tracking")
+        #             await message.channel.send("New row added!\n `addtrack view last#1` to check it out!")
+        #             allrows = getrow("last",1,addtracksheet)
+        #             for key,value in allrows.items():
+        #                     await message.channel.send("Row: " + str(key) + "\n-- " + str(value))                            
+        #     elif 'view' in command:
+        #         if len(args) != 2:
+        #             await message.channel.send("Too many / not enough arguments.  Ex: \n`addtrack view only#26` \n`addtrack view last#5`")
+        #         else:
+        #             allrows = getrow(args[0],int(args[1]),addtracksheet)
+        #             for key,value in allrows.items():
+        #                 await message.channel.send("Row: " + str(key) + "\n-- " + str(value))
+        #     elif 'update' in command:
+        #         if len(args) != 3:
+        #             await message.channel.send("Too many / not enough arguments, you need to provide `sheet update row#columnname#newvlue`")
+        #         updatecell(int(args[0]),args[1],args[2],addtracksheet)
+        #         await message.channel.send("Update sent!")
+        #         allrows = getrow("only",int(args[0]),addtracksheet)
+        #         for key,value in allrows.items():
+        #                 await message.channel.send("Row: " + str(key) + "\n-- " + str(value))
+        #     else:
+        #         await message.channel.send("Did you want to add, view, or update?\n If using `udpate` make sure to provide one of the columns:```\ndate\ntime\nfood\ndrink\ndosage\nmr\nduration\nnotes```")
+        # else:
+        getuser = message.author.name.lower()
+        writerow('now','now','none','water','15',None,None,None,addtracksheet,getuser + "tracking")
+        await message.channel.send("New row added!\n `addtrack view last#1` to check it out!")
+        allrows = getrow("last",1,addtracksheet)
+        for key,value in allrows.items():
+                await message.channel.send("Row: " + str(key) + "\n-- " + str(value))
 
     if message.content.lower().startswith('gastrack '):
         """
@@ -675,12 +687,18 @@ async def on_message(message):
                     await message.channel.send(msg)
                 else:
                     writerow("now","now",command[0], command[1], None, None, None, None,workouttracksheet,message.author.name.lower() + "tracking")
-                    allrows = getrow("last",len(workouts) + 2,workouttracksheet,message.author.name.lower())
+                    allstats = {}
+                    allrows = getgsheet(workouttracksheet,message.author.name.lower())
                     msg = "Added to " + message.author.name + "'s workout sheet: " + command[0] + " " + str(command[1]) + "\n"
-                    for key,value in allrows.items():
+                    for i in allrows:
+                        name = i['Exercise']
+                        total = i['Reps']
+                        allstats[name] = total
+                    print(allstats)
+                    for name,total in allstats.items():
                         try:
-                            if allrows[key][0] == command[0]:
-                                msg = msg + "Current total " + str(allrows[key][0]) + ": **" + str(allrows[key][1]) + "**"
+                            if name == command[0]:
+                                msg = msg + "Current total " + name + ": **" + str(allstats[command[0]]) + "**"
                         except Exception as e:
                             continue
                     await message.channel.send(msg)
@@ -693,16 +711,16 @@ async def on_message(message):
             """
                 doing some food tracking
             """
+            foodgoal = 20
             splitspace = message.content.lower().split(" ", 1)
             ate = splitspace[1]
-            getfoodstats = getrow("all",None,workouttracksheet,'meals')
+            getfoodstats = getgsheet(workouttracksheet,'meals',)
             foods = {}
-            getfoodstats = iter(getfoodstats)
-            next(getfoodstats)
+            getuser = message.author.name.lower()
             for i in getfoodstats:
-                food = i[0].lower()
-                cost = i[1]
-                foods[food] = cost
+                name = i['Food'].lower()
+                cost = i['Costs']
+                foods[name] = cost
             if ate not in foods.keys():
                 msg = "Wrong food type (" + ate + "), must be one of:"
                 for foodname in foods.keys():
@@ -710,7 +728,21 @@ async def on_message(message):
                 await message.channel.send(msg)
             else:
                 writerow("now","now",'food', foods[ate], ate, None, None, None,workouttracksheet,message.author.name.lower() + "tracking")
-                msg = "Added to " + message.author.name + "'s workout sheet: **" + ate + "** for **" + foods[ate] + "** points!"
+                getfatstats = getgsheet(workouttracksheet,getuser)
+                allstats = {}
+                for i in getfatstats:
+                    name = i['Exercise']
+                    total = i['Reps']
+                    allstats[name] = total
+                if allstats['food'] < foodgoal:
+                    allotremaining = foodgoal - allstats['food']
+                    msg = "Added to " + message.author.name + "'s workout sheet: **" + ate + "** for **" + str(foods[ate]) + "** points!"
+                    msg = msg + "\nYou still have " + str(allotremaining) + " points left to eat!"
+                elif allstats['food'] == foodgoal:
+                    msg = "Added to " + message.author.name + "'s workout sheet: **" + ate + "** for **" + str(foods[ate]) + "** points!"
+                    msg = "You hit your food goal, you _fool_!  Now you can't eat the rest of the day!"
+                elif allstats['food'] > foodgoal:
+                    msg = "You fat fuck, you ate too much."
                 await message.channel.send(msg)
 
         elif message.content.lower().startswith('!fatinfo'):
@@ -726,15 +758,20 @@ async def on_message(message):
                 print('fatinfo error - no username sent')
                 print(e)
             try:
-                allrows = getrow("last",len(workouts) + 3,workouttracksheet,getuser)
+                getfatstats = getgsheet(workouttracksheet,getuser)
+                allstats = {}
+                for i in getfatstats:
+                    name = i['Exercise']
+                    total = i['Reps']
+                    allstats[name] = total
                 msg = "**PHAT STATS BRO:** \n```"
                 msg = msg + "\n----\n"
-                for key,value in allrows.items():
+                for name,total in allstats.items():
                     try:
-                        if allrows[key][0] in workouts:
-                            msg = msg + str(allrows[key][0]) + ":\n   " + str(allrows[key][1]) + "\n"
-                        elif allrows[key][0] == 'food':
-                            msg = msg + str(allrows[key][0]) + ":\n   " + str(allrows[key][1]) + "/20\n"
+                        if name in workouts:
+                            msg = msg + str(name) + ":\n   " + str(total) + "\n"
+                        elif name == 'food':
+                            msg = msg + str(name) + ":\n   " + str(total) + "/20\n"
                     except Exception as e:
                         continue
                 msg = msg + "```\n **STILL FAT BRO**"                
@@ -743,6 +780,10 @@ async def on_message(message):
             await message.channel.send(msg)
         else:
             await message.channel.send("Did you want `!fatinfo`, `!fatadd` or `!fatfood`?")
+    if message.content.lower().startswith('qq'):
+        allrecords = getgsheet('testsheet','raphtracking',3,True)
+        print(allrecords)
+        await message.channel.send("done")
 
 @client.event
 async def on_ready():
