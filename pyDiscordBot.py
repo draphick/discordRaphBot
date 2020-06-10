@@ -132,12 +132,34 @@ def getgsheet(sheet = 'testsheet',sheettab = 'Sheet1',row = None, last = False):
     sheet = googleauth(sheet,sheettab)
     if row:
         if last:
+            # This will return the last written row as a list
+            # ie: ['2020/06/10', '10:03', 'none', 'water', '15']
             allcolvalues = list(filter(None, sheet.col_values(1)))
             lastrownum = str(len(allcolvalues))
             rowvalue = sheet.row_values(lastrownum)
         else:
+            # This will return the row requested as a list
+            # ie: ['2020/06/10', '10:03', 'none', 'water', '15']
             rowvalue = sheet.row_values(row)
     else:
+        # This will return an array of dictionaries using the header row (row 1) as the key and the column values as the values
+        # ie: 
+        # [
+        #     {
+        #         'date': 'today', 
+        #         'time': 'now', 
+        #         'action': 'sit', 
+        #         'result': 'sat', 
+        #         '': ''
+        #         }, 
+        #     {
+        #         'date': 'tomorrow', 
+        #         'time': 'later', 
+        #         'action': 'stand', 
+        #         'result': 'standing', 
+        #         '': ''
+        #         }
+        # ]
         rowvalue = sheet.get_all_records()
     return(rowvalue)
     
@@ -577,7 +599,7 @@ async def on_message(message):
             await message.channel.send('https://www.imdb.com/find?q=' + urlsplit)
             await message.add_reaction("\U0000274E")
     
-    if message.content.lower().startswith('addtrack '):
+    if message.content.lower().startswith('addtrack'):
         # """
         #     This is used to quickly track some meds when I take them.
         # """
@@ -613,11 +635,35 @@ async def on_message(message):
         #         await message.channel.send("Did you want to add, view, or update?\n If using `udpate` make sure to provide one of the columns:```\ndate\ntime\nfood\ndrink\ndosage\nmr\nduration\nnotes```")
         # else:
         getuser = message.author.name.lower()
-        writerow('now','now','none','water','15',None,None,None,addtracksheet,getuser + "tracking")
-        await message.channel.send("New row added!\n `addtrack view last#1` to check it out!")
-        allrows = getrow("last",1,addtracksheet)
-        for key,value in allrows.items():
-                await message.channel.send("Row: " + str(key) + "\n-- " + str(value))
+        if getuser == 'raph':
+            strength = 15
+        elif getuser == 'jermz':
+            strength = 10
+        writerow('now','now','none','water',strength,None,None,None,addtracksheet,getuser + "tracking")
+        await message.channel.send("New row added!")
+        lastrow = getgsheet(addtracksheet,getuser + "tracking",True,True)
+        allstats = {}
+        print(lastrow)
+        date = "\n    Date: " + str(lastrow[0])
+        print(date)
+        time = "\n    Time: " + str(lastrow[1])
+        print(time)
+        food = "\n    Food: " + str(lastrow[2])
+        print(food)
+        drink = "\n    Drink: " + str(lastrow[3])
+        print(drink)
+        strength = "\n    Strength: " + str(lastrow[4])
+        print(strength)
+        await message.channel.send("Added ---\n```" + date + time + food + drink + strength + "\n```")
+        
+
+        # allrows = getrow("last",1,addtracksheet)
+        # for i in allrows:
+        #     name = i['Exercise']
+        #     total = i['Reps']
+        #     allstats[name] = total
+        # for key,value in allrows.items():
+        #         await message.channel.send("Row: " + str(key) + "\n-- " + str(value))
 
     if message.content.lower().startswith('gastrack '):
         """
@@ -656,140 +702,139 @@ async def on_message(message):
         else:
             await message.channel.send("Did you want to add or view?\n Here are your columns:```\nDate\nOdo\nTrip\nDash\nGal\nPrice```")
 
-    if message.content.lower().startswith('!fat'):
-        workouts = {
-            'pushups' : 100,
-            'pullups' : 50,
-            'situps' : 100,
-            'squats' : 100,
-            'weight' : 90
-        }
-        if message.content.lower().startswith('!fatadd'):
-            """
-                doing some workout tracking
-                gsheet query:
-                =IFERROR(
-                    QUERY(
-                        raphtracking!$A1:$D,
-                        "select sum(D) where C = 'squats' and A = date '"&TEXT(TODAY(),"yyyy-mm-dd")&"' group by C label sum(D)''", 
-                        0
-                    ),
-                    0
-                )
-            """
-            splitspace = message.content.lower().split(" ", 1)
-            command = splitspace[1].split(" ")
-            if len(command) == 2:
-                if command[0] not in workouts.keys():
-                    msg = "Wrong workout type, must be one of:"
-                    for workout in workouts.keys():
-                        msg = msg + "\n   " + workout
-                    await message.channel.send(msg)
-                else:
-                    writerow("now","now",command[0], command[1], None, None, None, None,workouttracksheet,message.author.name.lower() + "tracking")
-                    allstats = {}
-                    allrows = getgsheet(workouttracksheet,message.author.name.lower())
-                    msg = "Added to " + message.author.name + "'s workout sheet: " + command[0] + " " + str(command[1]) + "\n"
-                    for i in allrows:
-                        name = i['Exercise']
-                        total = i['Reps']
-                        allstats[name] = total
-                    print(allstats)
-                    for name,total in allstats.items():
-                        try:
-                            if name == command[0]:
-                                msg = msg + "Current total " + name + ": **" + str(total) + "**"
-                                if total < workouts[name]:
-                                    left = workouts[name] - total
-                                    msg = msg + "\n You still have " + str(left) + " " + " left to do!"
-                                elif total >= workouts[name]:
-                                    msg = msg + "\n You hit your " + name + " goal, congrats!"
+    # if message.content.lower().startswith('!fat'):
+    #     workouts = {
+    #         'pushups' : 100,
+    #         'pullups' : 50,
+    #         'situps' : 100,
+    #         'squats' : 100,
+    #         'weight' : 90
+    #     }
+    #     if message.content.lower().startswith('!fatadd'):
+    #         """
+    #             doing some workout tracking
+    #             gsheet query:
+    #             =IFERROR(
+    #                 QUERY(
+    #                     raphtracking!$A1:$D,
+    #                     "select sum(D) where C = 'squats' and A = date '"&TEXT(TODAY(),"yyyy-mm-dd")&"' group by C label sum(D)''", 
+    #                     0
+    #                 ),
+    #                 0
+    #             )
+    #         """
+    #         splitspace = message.content.lower().split(" ", 1)
+    #         command = splitspace[1].split(" ")
+    #         if len(command) == 2:
+    #             if command[0] not in workouts.keys():
+    #                 msg = "Wrong workout type, must be one of:"
+    #                 for workout in workouts.keys():
+    #                     msg = msg + "\n   " + workout
+    #                 await message.channel.send(msg)
+    #             else:
+    #                 writerow("now","now",command[0], command[1], None, None, None, None,workouttracksheet,message.author.name.lower() + "tracking")
+    #                 allstats = {}
+    #                 allrows = getgsheet(workouttracksheet,message.author.name.lower())
+    #                 msg = "Added to " + message.author.name + "'s workout sheet: " + command[0] + " " + str(command[1]) + "\n"
+    #                 for i in allrows:
+    #                     name = i['Exercise']
+    #                     total = i['Reps']
+    #                     allstats[name] = total
+    #                 for name,total in allstats.items():
+    #                     try:
+    #                         if name == command[0]:
+    #                             msg = msg + "Current total " + name + ": **" + str(total) + "**"
+    #                             if total < workouts[name]:
+    #                                 left = workouts[name] - total
+    #                                 msg = msg + "\n You still have " + str(left) + " " + " left to do!"
+    #                             elif total >= workouts[name]:
+    #                                 msg = msg + "\n You hit your " + name + " goal, congrats!"
 
-                        except Exception as e:
-                            continue
-                    await message.channel.send(msg)
-            else:
-                msg = "Missing or too many arguments.  Provide a workout type and value\n Example: `!fatadd pushups 5` \n Available workout types: "
-                for workout in workouts.keys():
-                    msg = msg + "\n   " + workout
-                await message.channel.send(msg)
-        elif message.content.lower().startswith('!fatfood'):
-            """
-                doing some food tracking
-            """
-            foodgoal = 20
-            splitspace = message.content.lower().split(" ", 1)
-            ate = splitspace[1]
-            getfoodstats = getgsheet(workouttracksheet,'meals',)
-            foods = {}
-            getuser = message.author.name.lower()
-            for i in getfoodstats:
-                name = i['Food'].lower()
-                cost = i['Costs']
-                foods[name] = cost
-            if ate not in foods.keys():
-                msg = "Wrong food type (" + ate + "), must be one of:"
-                for foodname in foods.keys():
-                    msg = msg + "\n   " + foodname
-                await message.channel.send(msg)
-            else:
-                writerow("now","now",'food', foods[ate], ate, None, None, None,workouttracksheet,message.author.name.lower() + "tracking")
-                getfatstats = getgsheet(workouttracksheet,getuser)
-                allstats = {}
-                for i in getfatstats:
-                    name = i['Exercise']
-                    total = i['Reps']
-                    allstats[name] = total
-                if allstats['food'] < foodgoal:
-                    allotremaining = foodgoal - allstats['food']
-                    msg = "Added to " + message.author.name + "'s workout sheet: **" + ate + "** for **" + str(foods[ate]) + "** points!"
-                    msg = msg + "\nYou still have " + str(allotremaining) + " points left to eat!"
-                elif allstats['food'] == foodgoal:
-                    msg = "Added to " + message.author.name + "'s workout sheet: **" + ate + "** for **" + str(foods[ate]) + "** points!"
-                    msg = "You hit your food goal, you _fool_!  Now you can't eat the rest of the day!"
-                elif allstats['food'] > foodgoal:
-                    msg = "You fat fuck, you ate too much."
-                await message.channel.send(msg)
+    #                     except Exception as e:
+    #                         continue
+    #                 await message.channel.send(msg)
+    #         else:
+    #             msg = "Missing or too many arguments.  Provide a workout type and value\n Example: `!fatadd pushups 5` \n Available workout types: "
+    #             for workout in workouts.keys():
+    #                 msg = msg + "\n   " + workout
+    #             await message.channel.send(msg)
+    #     elif message.content.lower().startswith('!fatfood'):
+    #         """
+    #             doing some food tracking
+    #         """
+    #         foodgoal = 20
+    #         splitspace = message.content.lower().split(" ", 1)
+    #         ate = splitspace[1]
+    #         getfoodstats = getgsheet(workouttracksheet,'meals',)
+    #         foods = {}
+    #         getuser = message.author.name.lower()
+    #         for i in getfoodstats:
+    #             name = i['Food'].lower()
+    #             cost = i['Costs']
+    #             foods[name] = cost
+    #         if ate not in foods.keys():
+    #             msg = "Wrong food type (" + ate + "), must be one of:"
+    #             for foodname in foods.keys():
+    #                 msg = msg + "\n   " + foodname
+    #             await message.channel.send(msg)
+    #         else:
+    #             writerow("now","now",'food', foods[ate], ate, None, None, None,workouttracksheet,message.author.name.lower() + "tracking")
+    #             getfatstats = getgsheet(workouttracksheet,getuser)
+    #             allstats = {}
+    #             for i in getfatstats:
+    #                 name = i['Exercise']
+    #                 total = i['Reps']
+    #                 allstats[name] = total
+    #             if allstats['food'] < foodgoal:
+    #                 allotremaining = foodgoal - allstats['food']
+    #                 msg = "Added to " + message.author.name + "'s workout sheet: **" + ate + "** for **" + str(foods[ate]) + "** points!"
+    #                 msg = msg + "\nYou still have " + str(allotremaining) + " points left to eat!"
+    #             elif allstats['food'] == foodgoal:
+    #                 msg = "Added to " + message.author.name + "'s workout sheet: **" + ate + "** for **" + str(foods[ate]) + "** points!"
+    #                 msg = "You hit your food goal, you _fool_!  Now you can't eat the rest of the day!"
+    #             elif allstats['food'] > foodgoal:
+    #                 msg = "You fat fuck, you ate too much."
+    #             await message.channel.send(msg)
 
-        elif message.content.lower().startswith('!fatinfo'):
-            """
-                checking workout
-            """
-            getuser = message.author.name.lower()
-            try:
-                splitspace = message.content.lower().split(" ", 1)
-                command = splitspace[1].split(" ")
-                getuser = command[0]
-            except Exception as e:
-                print('fatinfo error - no username sent')
-                print(e)
-            try:
-                getfatstats = getgsheet(workouttracksheet,getuser)
-                allstats = {}
-                for i in getfatstats:
-                    name = i['Exercise']
-                    total = i['Reps']
-                    allstats[name] = total
-                msg = "**PHAT STATS BRO:** \n```"
-                msg = msg + "\n----\n"
-                for name,total in allstats.items():
-                    try:
-                        if name in workouts.keys():
-                            msg = msg + str(name) + ":\n   " + str(total) + "\n"
-                        elif name == 'food':
-                            msg = msg + str(name) + ":\n   " + str(total) + "/20\n"
-                    except Exception as e:
-                        continue
-                msg = msg + "```\n **STILL FAT BRO**"                
-            except Exception as e:
-                msg = "No user tracksheet data available for " + getuser
-            await message.channel.send(msg)
-        else:
-            await message.channel.send("Did you want `!fatinfo`, `!fatadd` or `!fatfood`?")
-    if message.content.lower().startswith('qq'):
-        allrecords = getgsheet('testsheet','raphtracking',3,True)
-        print(allrecords)
-        await message.channel.send("done")
+    #     elif message.content.lower().startswith('!fatinfo'):
+    #         """
+    #             checking workout
+    #         """
+    #         getuser = message.author.name.lower()
+    #         try:
+    #             splitspace = message.content.lower().split(" ", 1)
+    #             command = splitspace[1].split(" ")
+    #             getuser = command[0]
+    #         except Exception as e:
+    #             print('fatinfo error - no username sent')
+    #             print(e)
+    #         try:
+    #             getfatstats = getgsheet(workouttracksheet,getuser)
+    #             allstats = {}
+    #             for i in getfatstats:
+    #                 name = i['Exercise']
+    #                 total = i['Reps']
+    #                 allstats[name] = total
+    #             msg = "**PHAT STATS BRO:** \n```"
+    #             msg = msg + "\n----\n"
+    #             for name,total in allstats.items():
+    #                 try:
+    #                     if name in workouts.keys():
+    #                         msg = msg + str(name) + ":\n   " + str(total) + "\n"
+    #                     elif name == 'food':
+    #                         msg = msg + str(name) + ":\n   " + str(total) + "/20\n"
+    #                 except Exception as e:
+    #                     continue
+    #             msg = msg + "```\n **STILL FAT BRO**"                
+    #         except Exception as e:
+    #             msg = "No user tracksheet data available for " + getuser
+    #         await message.channel.send(msg)
+    #     else:
+    #         await message.channel.send("Did you want `!fatinfo`, `!fatadd` or `!fatfood`?")
+    # if message.content.lower().startswith('qq'):
+    #     allrecords = getgsheet('testsheet','raphtracking',3,True)
+    #     print(allrecords)
+    #     await message.channel.send("done")
 
 @client.event
 async def on_ready():
