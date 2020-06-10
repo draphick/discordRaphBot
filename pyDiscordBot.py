@@ -106,7 +106,7 @@ def googleauth(sheet,sheettab = 'Sheet1'):
         sheet = spreadsheet.add_worksheet(title=sheettab, rows="1", cols="8") 
     return(sheet)
 
-def getrow(more,total,sheet,sheettab = 'Sheet1'):
+def getrow(more,total = None,sheet = None,sheettab = 'Sheet1'):
     sheet = googleauth(sheet,sheettab)
     if more == 'last':
         returnrow = {}
@@ -123,7 +123,10 @@ def getrow(more,total,sheet,sheettab = 'Sheet1'):
         rowvalue = sheet.row_values(total)
         returnrow.update({total:rowvalue})
         return(returnrow)
-
+    elif more == 'all':
+        returnrow = {}
+        rowvalue = sheet.get_all_values()
+        return(rowvalue)
 
 def updatecell(row,column,value,sheet):
     sheet = googleauth(sheet)
@@ -686,6 +689,29 @@ async def on_message(message):
                 for workout in workouts:
                     msg = msg + "\n   " + workout
                 await message.channel.send(msg)
+        if message.content.lower().startswith('!fatfood'):
+            """
+                doing some food tracking
+            """
+            splitspace = message.content.lower().split(" ", 1)
+            ate = splitspace[1]
+            getfoodstats = getrow("all",None,workouttracksheet,'meals')
+            foods = {}
+            getfoodstats = iter(getfoodstats)
+            next(getfoodstats)
+            for i in getfoodstats:
+                food = i[0].lower()
+                cost = i[1]
+                foods[food] = cost
+            if ate not in foods.keys():
+                msg = "Wrong food type (" + ate + "), must be one of:"
+                for foodname in foods.keys():
+                    msg = msg + "\n   " + foodname
+                await message.channel.send(msg)
+            else:
+                writerow("now","now",'food', foods[ate], ate, None, None, None,workouttracksheet,message.author.name.lower() + "tracking")
+                msg = "Added to " + message.author.name + "'s workout sheet: **" + ate + "** for **" + foods[ate] + "** points!"
+                await message.channel.send(msg)
 
         elif message.content.lower().startswith('!fatinfo'):
             """
@@ -700,19 +726,18 @@ async def on_message(message):
                 print('fatinfo error - no username sent')
                 print(e)
             try:
-                allrows = getrow("last",len(workouts) + 2,workouttracksheet,getuser)
+                allrows = getrow("last",len(workouts) + 3,workouttracksheet,getuser)
                 msg = "**PHAT STATS BRO:** \n```"
                 msg = msg + "\n----\n"
                 for key,value in allrows.items():
                     try:
-                        if allrows[key][0] in workouts:
+                        if allrows[key][0] in workouts or allrows[key][0] == 'food':
                             msg = msg + str(allrows[key][0]) + ":\n   " + str(allrows[key][1]) + "\n"
                     except Exception as e:
                         continue
                 msg = msg + "```\n **STILL FAT BRO**"                
             except Exception as e:
                 msg = "No user tracksheet data available for " + getuser
-            
             await message.channel.send(msg)
         else:
             await message.channel.send("Did you want `!fatinfo` or `!fatadd`?")
