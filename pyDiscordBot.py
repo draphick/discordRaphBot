@@ -487,6 +487,14 @@ async def on_message(message):
         else:
             fullmessage = "Couldn't find anything looking for: \n\t" + splitmsg + "\nTry again."
         await message.channel.send(fullmessage)
+
+    if message.content.lower() == ('noice'):
+        """
+            giphy noice link
+        """
+        if not isinstance(message.channel, discord.abc.PrivateChannel):
+                await message.delete()
+        await message.channel.send("https://tenor.com/view/nice-nooice-bling-key-and-peele-gif-4294979")
   
 ########################## Some personal hidden bot commands
     if message.content.lower().startswith('rgservers'):
