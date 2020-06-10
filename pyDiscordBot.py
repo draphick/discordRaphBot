@@ -689,7 +689,7 @@ async def on_message(message):
                 for workout in workouts:
                     msg = msg + "\n   " + workout
                 await message.channel.send(msg)
-        if message.content.lower().startswith('!fatfood'):
+        elif message.content.lower().startswith('!fatfood'):
             """
                 doing some food tracking
             """
