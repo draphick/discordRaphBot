@@ -731,8 +731,10 @@ async def on_message(message):
                 msg = msg + "\n----\n"
                 for key,value in allrows.items():
                     try:
-                        if allrows[key][0] in workouts or allrows[key][0] == 'food':
+                        if allrows[key][0] in workouts:
                             msg = msg + str(allrows[key][0]) + ":\n   " + str(allrows[key][1]) + "\n"
+                        elif allrows[key][0] == 'food':
+                            msg = msg + str(allrows[key][0]) + ":\n   " + str(allrows[key][1]) + "/20\n"
                     except Exception as e:
                         continue
                 msg = msg + "```\n **STILL FAT BRO**"                
