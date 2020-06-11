@@ -752,7 +752,7 @@ async def on_message(message):
                                     msg = msg + "Current total " + name + ": **" + str(total) + "**"
                                     if total > workouts[name]:
                                         left = total - workouts[name]
-                                        msg = msg + "\n You still have " + str(left) + " " + " before you hit " + str(workouts[name])
+                                        msg = msg + "\n You still have " + str(left) + " more pounds before you hit " + str(workouts[name])
                                     elif total <= workouts[name]:
                                         msg = msg + "\n You hit your " + name + " goal, congrats you skinny guy you!"
                                         yay = gifrandom('congrats')
