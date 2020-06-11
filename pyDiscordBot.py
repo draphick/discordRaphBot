@@ -49,6 +49,16 @@ urllib3.disable_warnings()
 client = discord.Client()
 authstuff = {'Authorization':'Client-ID ' + imgurauth}
 
+def gifrandom(search):
+    allurls = []
+    allrofl = requests.get('http://api.giphy.com/v1/gifs/search?q=' + search + '&api_key=' + giphyapi + '&limit=10', verify=False)
+    allgifs = allrofl.json()
+    allgifs = allgifs['data']
+    for gif in allgifs:
+        allurls.append(gif['url'])
+    rofl = random.choice(allurls)
+    return rofl
+
 def getalbum(endpoint):
     albumimages = {}
     r = requests.get(endpoint, verify=False, headers=authstuff)
@@ -716,7 +726,7 @@ async def on_message(message):
             'pullups' : 50,
             'situps' : 100,
             'squats' : 100,
-            'weight' : 90
+            'weight' : 190
         }
         if message.content.lower().startswith('!fatadd'):
             """
@@ -751,12 +761,24 @@ async def on_message(message):
                     for name,total in allstats.items():
                         try:
                             if name == command[0]:
-                                msg = msg + "Current total " + name + ": **" + str(total) + "**"
-                                if total < workouts[name]:
-                                    left = workouts[name] - total
-                                    msg = msg + "\n You still have " + str(left) + " " + " left to do!"
-                                elif total >= workouts[name]:
-                                    msg = msg + "\n You hit your " + name + " goal, congrats!"
+                                if name == 'weight':
+                                    msg = msg + "Current total " + name + ": **" + str(total) + "**"
+                                    if total > workouts[name]:
+                                        left = total - workouts[name]
+                                        msg = msg + "\n You still have " + str(left) + " " + " before you hit " + str(workouts[name])
+                                    elif total <= workouts[name]:
+                                        msg = msg + "\n You hit your " + name + " goal, congrats you skinny guy you!"
+                                        yay = gifrandom('congrats')
+                                        msg = msg + "\n" + yay
+                                else:
+                                    msg = msg + "Current total " + name + ": **" + str(total) + "**"
+                                    if total < workouts[name]:
+                                        left = workouts[name] - total
+                                        msg = msg + "\n You still have " + str(left) + " " + " left to do!"
+                                    elif total >= workouts[name]:
+                                        msg = msg + "\n You hit your " + name + " goal, congrats!"
+                                        yay = gifrandom('congrats')
+                                        msg = msg + "\n" + yay
 
                         except Exception as e:
                             continue
@@ -801,7 +823,9 @@ async def on_message(message):
                     msg = "Added to " + message.author.name + "'s workout sheet: **" + ate + "** for **" + str(foods[ate]) + "** points!"
                     msg = "You hit your food goal, you _fool_!  Now you can't eat the rest of the day!"
                 elif allstats['food'] > foodgoal:
-                    msg = "You fat fuck, you ate too much."
+                    msg = "Oh, hello fatso. You ate too much."
+                    yay = gifrandom('fatso')
+                    msg = msg + "\n" + yay
                 await message.channel.send(msg)
 
         elif message.content.lower().startswith('!fatinfo'):
