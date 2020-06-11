@@ -825,8 +825,7 @@ async def on_message(message):
                 command = splitspace[1].split(" ")
                 getuser = command[0]
             except Exception as e:
-                print('fatinfo error - no username sent')
-                print(e)
+                pass
             try:
                 getfatstats = getgsheet(workouttracksheet,getuser)
                 allstats = {}
