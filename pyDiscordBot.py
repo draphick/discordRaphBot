@@ -737,7 +737,7 @@ async def on_message(message):
                         msg = msg + "\n   " + workout
                     await message.channel.send(msg)
                 else:
-                    writerow("now","now",command[0], command[1], None, None, None, None,workouttracksheet,message.author.name.lower() + "tracking")
+                    writerow("now","now",command[0], command[1], None, message.author.name.lower(), None, None,workouttracksheet,"tracking")
                     allstats = {}
                     allrows = getgsheet(workouttracksheet,message.author.name.lower())
                     msg = "Added to " + message.author.name + "'s workout sheet: " + command[0] + " " + str(command[1]) + "\n"
@@ -801,7 +801,7 @@ async def on_message(message):
                     msg = msg + "\n   " + foodname
                 await message.channel.send(msg)
             else:
-                writerow("now","now",'food', foods[ate], ate, None, None, None,workouttracksheet,message.author.name.lower() + "tracking")
+                writerow("now","now",'food', foods[ate], ate, message.author.name.lower(), None, None,workouttracksheet, "tracking")
                 getfatstats = getgsheet(workouttracksheet,getuser)
                 allstats = {}
                 for i in getfatstats:
