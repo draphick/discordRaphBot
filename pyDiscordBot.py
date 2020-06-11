@@ -280,29 +280,6 @@ async def on_message(message):
         acget {search terms} - Search villagerdb for items, villagers, recipes, anything.  eg `acget bamboo hat`
         tr {translate these words} - Translate english to Tagalog.  eg. `tr I'm hungry`""")
 
-    # if all(c in "lo" for c in message.content.lower()):
-    #     """
-    #         If someone sends a message of only l and o
-    #         such as LOLLLOLOLLOLOL
-    #         or LOLLLLLL
-    #         or LOL
-    #         it will send a random giphy searching rofl or lol
-    #     """
-    #     searchterms = ['rofl', 'lol','laughing']
-    #     search = random.choice(searchterms)
-    #     allurls = []
-    #     allrofl = requests.get('http://api.giphy.com/v1/gifs/search?q=' + search + '&api_key=' + giphyapi + '&limit=10', verify=False)
-    #     allgifs = allrofl.json()
-    #     allgifs = allgifs['data']
-    #     for gif in allgifs:
-    #         allurls.append(gif['url'])
-    #     rofl = random.choice(allurls)
-    #     if not isinstance(message.channel, discord.abc.PrivateChannel):
-    #         await message.delete()
-    #     await message.channel.send(message.author.mention + " IS LAUGHING!!!")
-    #     await message.channel.send(rofl)
-    #     del allrofl
-
     if message.content.lower().startswith('dl'):
         """ 
             Send a Dragalia emote
@@ -500,12 +477,22 @@ async def on_message(message):
 
     if message.content.lower() == ('noice'):
         """
-            giphy noice link
+            giphy noice 
         """
         if not isinstance(message.channel, discord.abc.PrivateChannel):
                 await message.delete()
-        await message.channel.send("https://tenor.com/view/nice-nooice-bling-key-and-peele-gif-4294979")
-  
+        msg = gifrandom("noice")
+        await message.channel.send(msg)
+
+    if message.content.lower() == ('thanks') or message.content.lower() == ('thanks!') or message.content.lower() == ('thanks!!') or message.content.lower() == ('thanks!!!'):
+        """
+            giphy thanks 
+        """
+        if not isinstance(message.channel, discord.abc.PrivateChannel):
+                await message.delete()
+        msg = gifrandom("thanks")
+        await message.channel.send(msg)
+          
 ########################## Some personal hidden bot commands
     if message.content.lower().startswith('rgservers'):
         """
