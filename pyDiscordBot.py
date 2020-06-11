@@ -605,40 +605,6 @@ async def on_message(message):
             await message.add_reaction("\U0000274E")
     
     if message.content.lower().startswith('addtrack'):
-        # """
-        #     This is used to quickly track some meds when I take them.
-        # """
-        # splitspace = message.content.lower().split(" ", 1)
-        # command = splitspace[1].split(" ", 1)
-        # if len(command) == 2:
-        #     args = command[1].split("#")
-        #     if 'add' in command:
-        #         if len(args) != 8:
-        #             await message.channel.send("Invalid amount of columns, try again!  Remember these columns: ```\ndate\ntime\nfood\ndrink\ndosage\nmr\nduration\nnotes```")
-        #         else:                    
-        #             writerow(args[0],args[1],args[2],args[3],args[4],args[5],args[6],args[7],addtracksheet,message.author.name.lower() + "tracking")
-        #             await message.channel.send("New row added!\n `addtrack view last#1` to check it out!")
-        #             allrows = getrow("last",1,addtracksheet)
-        #             for key,value in allrows.items():
-        #                     await message.channel.send("Row: " + str(key) + "\n-- " + str(value))                            
-        #     elif 'view' in command:
-        #         if len(args) != 2:
-        #             await message.channel.send("Too many / not enough arguments.  Ex: \n`addtrack view only#26` \n`addtrack view last#5`")
-        #         else:
-        #             allrows = getrow(args[0],int(args[1]),addtracksheet)
-        #             for key,value in allrows.items():
-        #                 await message.channel.send("Row: " + str(key) + "\n-- " + str(value))
-        #     elif 'update' in command:
-        #         if len(args) != 3:
-        #             await message.channel.send("Too many / not enough arguments, you need to provide `sheet update row#columnname#newvlue`")
-        #         updatecell(int(args[0]),args[1],args[2],addtracksheet)
-        #         await message.channel.send("Update sent!")
-        #         allrows = getrow("only",int(args[0]),addtracksheet)
-        #         for key,value in allrows.items():
-        #                 await message.channel.send("Row: " + str(key) + "\n-- " + str(value))
-        #     else:
-        #         await message.channel.send("Did you want to add, view, or update?\n If using `udpate` make sure to provide one of the columns:```\ndate\ntime\nfood\ndrink\ndosage\nmr\nduration\nnotes```")
-        # else:
         getuser = message.author.name.lower()
         if getuser == 'raph':
             strength = 15
@@ -721,11 +687,9 @@ async def on_message(message):
                 gsheet query:
                 =IFERROR(
                     QUERY(
-                        raphtracking!$A1:$D,
-                        "select sum(D) where C = 'squats' and A = date '"&TEXT(TODAY(),"yyyy-mm-dd")&"' group by C label sum(D)''", 
-                        0
-                    ),
-                    0
+                        tracking!$A1:$F,
+                        "select sum(D) where C = '"&INDEX(A:A, ROW())&"' and F = 'raph' and A = date '"&TEXT(TODAY(),"yyyy-mm-dd")&"' group by C label sum(D)''", 0
+                    ),0
                 )
             """
             splitspace = message.content.lower().split(" ", 1)
@@ -855,10 +819,6 @@ async def on_message(message):
             await message.channel.send(msg)
         else:
             await message.channel.send("Did you want `!fatinfo`, `!fatadd` or `!fatfood`?")
-    if message.content.lower().startswith('qq'):
-        allrecords = getgsheet('testsheet','raphtracking',3,True)
-        print(allrecords)
-        await message.channel.send("done")
 
 @client.event
 async def on_ready():
