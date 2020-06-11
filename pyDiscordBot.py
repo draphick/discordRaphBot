@@ -737,6 +737,8 @@ async def on_message(message):
                         msg = msg + "\n   " + workout
                     await message.channel.send(msg)
                 else:
+                    allrowsold = getgsheet(workouttracksheet,message.author.name.lower())
+                    allstatsold = {}
                     writerow("now","now",command[0], command[1], None, None, None, None,workouttracksheet,message.author.name.lower() + "tracking")
                     allstats = {}
                     allrows = getgsheet(workouttracksheet,message.author.name.lower())
@@ -745,6 +747,10 @@ async def on_message(message):
                         name = i['Exercise']
                         total = i['Reps']
                         allstats[name] = total
+                    for i in allrowsold:
+                        name = i['Exercise']
+                        total = i['Reps']
+                        allstatsold[name] = total
                     for name,total in allstats.items():
                         try:
                             if name == command[0]:
@@ -763,10 +769,17 @@ async def on_message(message):
                                         left = workouts[name] - total
                                         msg = msg + "\n You still have " + str(left) + " " + " left to do!"
                                     elif total >= workouts[name]:
-                                        msg = msg + "\n You hit your " + name + " goal, congrats!"
-                                        yay = gifrandom('congrats')
-                                        msg = msg + "\n" + yay
-
+                                        for nameold,totalold in allstatsold.items():
+                                            try:
+                                                if nameold == command[0]:
+                                                    if totalold >= workouts[name]:
+                                                        msg = msg + "\n You already hit your goal.  Just stahhhpppp!"
+                                                    else:
+                                                        msg = msg + "\n You hit your " + name + " goal, congrats!"
+                                                        yay = gifrandom('congrats')
+                                                        msg = msg + "\n " + yay
+                                            except Exception as e:
+                                                continue
                         except Exception as e:
                             continue
                     await message.channel.send(msg)
