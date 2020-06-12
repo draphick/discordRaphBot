@@ -20,7 +20,7 @@ docker run \
   -d \
   --restart=always \
   --name=$name \
-  -v $dockershloc/discordRaphBot:/discordbot:ro \
+  -v $dockershloc/discordRaphBot:/discordbot:rw \
   -v /etc/timezone:/etc/timezone:ro \
   -v /etc/localtime:/etc/localtime:ro \
   -e debug=$debug \

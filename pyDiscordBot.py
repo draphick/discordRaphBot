@@ -642,10 +642,11 @@ QUERY(
                 for name,total in allstats.items():
                     try:
                         if name in workouts.keys():
-                            msg = msg + str(name) + ":\n   " + str(total) + "\n"
+                            msg = msg + str(name) + ":\n   " + str(total) + "/" + str(workouts[name]) + "\n"
                         elif name == 'food':
                             msg = msg + str(name) + ":\n   " + str(total) + "/20\n"
                     except Exception as e:
+                        print(e)
                         continue
                 msg = msg + "```\n **STILL FAT BRO**"                
             except Exception as e:
@@ -653,28 +654,28 @@ QUERY(
             await message.channel.send(msg)
         else:
             await message.channel.send("Did you want `!fatinfo`, `!fatadd` or `!fatfood`?")
-    if message.content.lower().startswith('qq'):
-        workoutdata = { 
-            "username": message.author.name, 
-            "goals": {
-                "pushups": 100,
-                "pullups": 100,
-                "situps": 100,
-                "squats": 100,
-                "weight": 190
-                },
-            "worksheet_tracking": "tracking",
-            "worksheet_stats": "message.author.name"  
-        }
+    # if message.content.lower().startswith('qq'):
+    #     workoutdata = { 
+    #         "username": message.author.name, 
+    #         "goals": {
+    #             "pushups": 100,
+    #             "pullups": 100,
+    #             "situps": 100,
+    #             "squats": 100,
+    #             "weight": 190
+    #             },
+    #         "worksheet_tracking": "tracking",
+    #         "worksheet_stats": "message.author.name"  
+    #     }
 
-        userfolder = get_user_folder(message.author.id)
-        workoutfile = check_user_json_file(userfolder,'workouts')
-        if workoutfile == True:
-            workoutinfo = get_user_data(message.author.id,'workouts')
-            if workoutinfo == False:
-                create_user_json_data(message.author.id,'workouts',workoutdata)
-                workoutinfo = get_user_data(message.author.id,'workouts')
-        await message.channel.send(workoutinfo['username'])
+    #     userfolder = get_user_folder(message.author.id)
+    #     workoutfile = check_user_json_file(userfolder,'workouts')
+    #     if workoutfile == True:
+    #         workoutinfo = get_user_data(message.author.id,'workouts')
+    #         if workoutinfo == False:
+    #             create_user_json_data(message.author.id,'workouts',workoutdata)
+    #             workoutinfo = get_user_data(message.author.id,'workouts')
+    #     await message.channel.send(workoutinfo['username'])
 
 
 @client.event
