@@ -2,3 +2,6 @@ virtenv_discordbot
 .env
 cred_file.json
 pyTest*
+__pycache__/
+users/
+users.dev/
