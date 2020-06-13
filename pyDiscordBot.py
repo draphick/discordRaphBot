@@ -536,7 +536,7 @@ QUERY(
                 workoutinfo['gain_loss'] = "none"
                 update_user_data(message.author.id,'workouts',workoutinfo)
                 updatedinfo = get_user_data(message.author.id,'workouts')
-                msg = "Alright, alright.  Keep it secret.  No weight gain/loss reported."
+                msg = "You've reset your reported weight gain/loss preference.  Your secret is safe with me!"
             await message.channel.send(msg)
             
             
@@ -664,8 +664,8 @@ QUERY(
             getuser = message.author.name.lower()
             try:
                 splitspace = message.content.lower().split(" ", 1)
-                command = splitspace[1].split(" ")
-                getuser = command[0]
+                command = splitspace[1]
+                getuser = command
             except Exception as e:
                 pass
             try:
