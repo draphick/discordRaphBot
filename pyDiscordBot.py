@@ -428,6 +428,7 @@ async def on_message(message):
                 "squats": 100,
                 "weight": 190
                 },
+            "gain_loss": "none",
             "worksheet_tracking": "tracking",
             "worksheet_stats": message.author.name
         }
@@ -512,9 +513,33 @@ QUERY(
                 for missing in allactions:
                     msg = msg + "\n   " + missing
             await message.channel.send(msg)
+        elif message.content.lower().startswith('!fatweight'):
+            try:
+                splitspace = message.content.lower().split(" ", 1)
+                command = splitspace[1]
+            except Exception as e:
+                command = "none"
+                print(e)
+            print(command)
+            if command == "gain":
+                workoutinfo['gain_loss'] = "gain"
+                update_user_data(message.author.id,'workouts',workoutinfo)
+                updatedinfo = get_user_data(message.author.id,'workouts')
+                msg = "Setting up to gain weight I see!  \nI set up your profile for weight gain."
+            elif command == "loss":
+                workoutinfo['gain_loss'] = "loss"
+                update_user_data(message.author.id,'workouts',workoutinfo)
+                updatedinfo = get_user_data(message.author.id,'workouts')
+                msg = "I see you have already lost some weight!  I think?  Maybe?\n I set up your profile for weight loss."
+
+            else:
+                workoutinfo['gain_loss'] = "none"
+                update_user_data(message.author.id,'workouts',workoutinfo)
+                updatedinfo = get_user_data(message.author.id,'workouts')
+                msg = "Alright, alright.  Keep it secret.  No weight gain/loss reported."
+            await message.channel.send(msg)
             
-
-
+            
         elif message.content.lower().startswith('!fatadd'):
             """
                 doing some workout tracking
@@ -549,13 +574,26 @@ QUERY(
                                 oldtotal = total - int(command[1])
                                 if name == 'weight':
                                     msg = msg + "Current total " + name + ": **" + str(total) + "**"
-                                    if total > workouts[name]:
-                                        left = total - workouts[name]
-                                        msg = msg + "\n You still have " + str(left) + " more pounds before you hit " + str(workouts[name])
-                                    elif total <= workouts[name]:
-                                        msg = msg + "\n You hit your " + name + " goal, congrats you skinny guy you!"
-                                        yay = gifrandom('congrats')
-                                        msg = msg + "\n" + yay
+                                    if workoutinfo['gain_loss'] == "loss":
+                                        if total > workouts[name]:
+                                            left = total - workouts[name]
+                                            msg = msg + "\n You still have " + str(left) + " more pounds before you hit " + str(workouts[name])
+                                        elif total <= workouts[name]:
+                                            msg = msg + "\n You hit your " + name + " goal, congrats!  You hit that!!"
+                                            yay = gifrandom('congrats')
+                                            msg = msg + "\n" + yay
+                                    elif workoutinfo['gain_loss'] == "gain":
+                                        if total < workouts[name]:
+                                            left = workouts[name] - total
+                                            msg = msg + "\n You still have " + str(left) + " more pounds before you hit " + str(workouts[name])
+                                        elif total >= workouts[name]:
+                                            msg = msg + "\n You hit your " + name + " goal, congrats!  You hit that!!"
+                                            yay = gifrandom('congrats')
+                                            msg = msg + "\n" + yay
+                                    else:
+                                        msg = msg + "\n Are you trying to gain or lose weight?"
+                                        msg = msg + "  You don't need to let me know, but if you want, let me know with the command: "
+                                        msg = msg + "`!fatweight gain` or `!fatweight loss`"
                                 else:
                                     msg = msg + "Current total " + name + ": **" + str(total) + "**"
                                     if total < workouts[name]:
@@ -653,29 +691,30 @@ QUERY(
                 msg = "No user tracksheet data available for " + getuser
             await message.channel.send(msg)
         else:
-            await message.channel.send("Did you want `!fatinfo`, `!fatadd` or `!fatfood`?")
-    # if message.content.lower().startswith('qq'):
-    #     workoutdata = { 
-    #         "username": message.author.name, 
-    #         "goals": {
-    #             "pushups": 100,
-    #             "pullups": 100,
-    #             "situps": 100,
-    #             "squats": 100,
-    #             "weight": 190
-    #             },
-    #         "worksheet_tracking": "tracking",
-    #         "worksheet_stats": "message.author.name"  
-    #     }
+            await message.channel.send("What're you looking for?  I have these fat options:\n`!fatinfo`\n`!fatadd`\n`!fatfood`\n`!fatweight`\n`!fatgoal`")
+    if message.content.lower().startswith('qq'):
+        print(message.guild.members)
+        # workoutdata = { 
+        #     "username": message.author.name, 
+        #     "goals": {
+        #         "pushups": 100,
+        #         "pullups": 100,
+        #         "situps": 100,
+        #         "squats": 100,
+        #         "weight": 190
+        #         },
+        #     "worksheet_tracking": "tracking",
+        #     "worksheet_stats": "message.author.name"  
+        # }
 
-    #     userfolder = get_user_folder(message.author.id)
-    #     workoutfile = check_user_json_file(userfolder,'workouts')
-    #     if workoutfile == True:
-    #         workoutinfo = get_user_data(message.author.id,'workouts')
-    #         if workoutinfo == False:
-    #             create_user_json_data(message.author.id,'workouts',workoutdata)
-    #             workoutinfo = get_user_data(message.author.id,'workouts')
-    #     await message.channel.send(workoutinfo['username'])
+        # userfolder = get_user_folder(message.author.id)
+        # workoutfile = check_user_json_file(userfolder,'workouts')
+        # if workoutfile == True:
+        #     workoutinfo = get_user_data(message.author.id,'workouts')
+        #     if workoutinfo == False:
+        #         create_user_json_data(message.author.id,'workouts',workoutdata)
+        #         workoutinfo = get_user_data(message.author.id,'workouts')
+        # await message.channel.send(workoutinfo['username'])
 
 
 @client.event
