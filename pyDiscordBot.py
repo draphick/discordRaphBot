@@ -414,7 +414,7 @@ async def on_message(message):
 
     if message.content.lower().startswith('!fat'):
         getuser = message.author.name.lower()
-        print(getuser + " ran a fat command " + str(datetime.date.today().strftime("%Y/%m/%d")))
+        print(getuser + " ran a fat command " + message.content.lower())
         print(str(datetime.datetime.now().strftime("%H:%M:%S")))
 
         workoutdata_basevalues = { 
@@ -690,7 +690,7 @@ QUERY(
             await message.channel.send(msg)
         else:
             await message.channel.send("What're you looking for?  I have these fat options:\n`!fatinfo`\n`!fatadd`\n`!fatfood`\n`!fatweight`\n`!fatgoal`")
-        print(getuser + " finished a fat command" + str(datetime.date.today().strftime("%Y/%m/%d")))
+        print(getuser + " finished a fat command " + message.content.lower())
         print(str(datetime.datetime.now().strftime("%H:%M:%S")))
 
         
