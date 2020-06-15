@@ -413,6 +413,10 @@ async def on_message(message):
             await message.channel.send("Did you want to add or view?\n Here are your columns:```\nDate\nOdo\nTrip\nDash\nGal\nPrice```")
 
     if message.content.lower().startswith('!fat'):
+        getuser = message.author.name.lower()
+        print(getuser + " ran a fat command " + str(datetime.date.today().strftime("%Y/%m/%d")))
+        print(str(datetime.datetime.now().strftime("%H:%M:%S")))
+
         workoutdata_basevalues = { 
             "username": message.author.name, 
             "goals": {
@@ -686,6 +690,11 @@ QUERY(
             await message.channel.send(msg)
         else:
             await message.channel.send("What're you looking for?  I have these fat options:\n`!fatinfo`\n`!fatadd`\n`!fatfood`\n`!fatweight`\n`!fatgoal`")
+        print(getuser + " finished a fat command" + str(datetime.date.today().strftime("%Y/%m/%d")))
+        print(str(datetime.datetime.now().strftime("%H:%M:%S")))
+
+        
+
     if message.content.lower().startswith('qq'):
         print(message.guild.members)
         # workoutdata = { 
