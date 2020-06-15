@@ -220,7 +220,7 @@ async def on_message(message):
             fullmessage = "Couldn't find anything looking for: \n\t" + splitmsg + "\nTry again."
         await message.channel.send(fullmessage)
 
-    if message.content.lower() == ('noice'):
+    if message.content.lower() == ('noice') or message.content.lower() == ('nice'):
         """
             giphy noice 
         """
@@ -239,12 +239,6 @@ async def on_message(message):
         await message.channel.send(msg)
           
 ########################## Some personal hidden bot commands
-    if message.content.lower().startswith('rgservers'):
-        """
-            I wanted to be able to check to see what servers my bot is connected to.
-        """
-        await message.channel.send("A list of all connected servers:\n     " + "\n     ".join(str(servers) for servers in client.guilds))
-
     if message.content.lower().endswith('#') or message.content.lower().startswith('tr '):
         """
             Translate Tagalog to English or vice versa
@@ -728,6 +722,11 @@ async def on_ready():
     print(client.user.id)
     print('Bot set to: ' + TOKEN)
     print('------')
+    # Get list of servers and memembers
+    # for guild in client.guilds:
+    #     print("Server: " + str(guild))
+    #     for member in guild.members:
+    #         print("        " + str(member))
     check_watch_dir(WATCH_DIRECTORY)
     await asyncio.gather(asyncio.ensure_future(watch.run()))
 client.run(TOKEN)
