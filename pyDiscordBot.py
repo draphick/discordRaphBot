@@ -689,7 +689,13 @@ QUERY(
                 msg = "No user tracksheet data available for " + getuser
             await message.channel.send(msg)
         else:
-            await message.channel.send("What're you looking for?  I have these fat options:\n`!fatinfo`\n`!fatadd`\n`!fatfood`\n`!fatweight`\n`!fatgoal`")
+            msg = """What're you looking for?  I have these fat options:
+            `!fatinfo` - Get your current stats
+            `!fatadd {workoutname}` - Add to your current workouts
+            `!fatfood {s|m|l}` - Add some food you ate
+            `!fatweight {gain|loss}` - Setup your current weight goal (to gain weight or lose weight)
+            `!fatgoal {add|remove|view} {workoutname} {goal}` - Add/remove/view your current workout goals."""
+            await message.channel.send(msg)
         print(getuser + " finished a fat command " + message.content.lower())
         print(str(datetime.datetime.now().strftime("%H:%M:%S")))
 
