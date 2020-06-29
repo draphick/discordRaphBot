@@ -10,7 +10,7 @@ else
   # dockershloc="/Users/rgallardo/git/draphick"
   . ../dockerSource.sh
   dockershloc=$dockershloc
-  name='discordraphbot'
+  name='discordraphbotdev'
   echo "Running dev"
 fi
 
