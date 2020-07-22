@@ -22,7 +22,7 @@ client = discord.Client()
 load_dotenv()
 if os.environ['debug'] == "y":
     # Dev
-    TOKEN = os.getenv('DISCORD_TOKEN_DEV')
+    TOKEN = os.getenv('DISCORD_TOKEN_PROD')
     tagalogsheet = os.getenv('testsheet')
     gastracksheet = os.getenv('testsheet')
     addtracksheet = os.getenv('testsheet')
