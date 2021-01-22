@@ -22,7 +22,7 @@ client = discord.Client()
 load_dotenv()
 if os.environ['debug'] == "y":
     # Dev
-    TOKEN = os.getenv('DISCORD_TOKEN_PROD')
+    TOKEN = os.getenv('DISCORD_TOKEN_DEV')
     tagalogsheet = os.getenv('testsheet')
     gastracksheet = os.getenv('testsheet')
     addtracksheet = os.getenv('testsheet')
@@ -102,7 +102,7 @@ def getplex(title, showmovie, year = None):
                 answer.update({counter:newtitle})
             if showmovie == 'movie' and year == x['year']:
                 counter = counter + 1
-                if x['downloaded']:
+                if x['isAvailable']:
                     newtitle = x['title'] + ' (' + str(x['year']) + ')' + ' _is already downloaded._'
                     answer.update({counter:newtitle})
                 else:
