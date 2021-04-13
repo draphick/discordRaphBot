@@ -349,11 +349,13 @@ async def on_message(message):
             strength = 15
         elif getuser == 'jermz':
             strength = 10
-        writerow('now','now','none','water',strength,None,None,None,addtracksheet,getuser + "tracking")
+        writerow('now','now','none','water',strength,None,None,'adderall',addtracksheet,getuser + "tracking")
         await message.channel.send("New row added!")
         lastrow = getgsheet(addtracksheet,getuser + "tracking",True,True)
         allstats = {}
         print(lastrow)
+        medtype = "\n    MedType: Adderall"
+        print(medtype)
         date = "\n    Date: " + str(lastrow[0])
         print(date)
         time = "\n    Time: " + str(lastrow[1])
@@ -364,7 +366,32 @@ async def on_message(message):
         print(drink)
         strength = "\n    Strength: " + str(lastrow[4])
         print(strength)
-        await message.channel.send("Added ---\n```" + date + time + food + drink + strength + "\n```")
+        await message.channel.send("Added ---\n```" + medtype + date + time + food + drink + strength + "\n```")
+    
+    if message.content.lower().startswith('andetrack'):
+        getuser = message.author.name.lower()
+        if getuser == 'raph':
+            strength = 0
+        elif getuser == 'jermz':
+            strength = 150
+        writerow('now','now','none','water',strength,None,None,'Antidepressant',addtracksheet,getuser + "tracking")
+        await message.channel.send("New row added!")
+        lastrow = getgsheet(addtracksheet,getuser + "tracking",True,True)
+        allstats = {}
+        print(lastrow)
+        medtype = "\n    MedType: Antidepressant"
+        print(medtype)
+        date = "\n    Date: " + str(lastrow[0])
+        print(date)
+        time = "\n    Time: " + str(lastrow[1])
+        print(time)
+        food = "\n    Food: " + str(lastrow[2])
+        print(food)
+        drink = "\n    Drink: " + str(lastrow[3])
+        print(drink)
+        strength = "\n    Strength: " + str(lastrow[4])
+        print(strength)
+        await message.channel.send("Added ---\n```" + medtype + date + time + food + drink + strength + "\n```")
         
 
         # allrows = getrow("last",1,addtracksheet)
