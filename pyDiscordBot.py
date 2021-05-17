@@ -220,23 +220,23 @@ async def on_message(message):
             fullmessage = "Couldn't find anything looking for: \n\t" + splitmsg + "\nTry again."
         await message.channel.send(fullmessage)
 
-    if message.content.lower() == ('noice') or message.content.lower() == ('nice'):
-        """
-            giphy noice 
-        """
-        if not isinstance(message.channel, discord.abc.PrivateChannel):
-                await message.delete()
-        msg = gifrandom("noice")
-        await message.channel.send(msg)
+    # if message.content.lower() == ('noice') or message.content.lower() == ('nice'):
+    #     """
+    #         giphy noice 
+    #     """
+    #     if not isinstance(message.channel, discord.abc.PrivateChannel):
+    #             await message.delete()
+    #     msg = gifrandom("noice")
+    #     await message.channel.send(msg)
 
-    if message.content.lower() == ('thanks') or message.content.lower() == ('thanks!') or message.content.lower() == ('thanks!!') or message.content.lower() == ('thanks!!!'):
-        """
-            giphy thanks 
-        """
-        if not isinstance(message.channel, discord.abc.PrivateChannel):
-                await message.delete()
-        msg = gifrandom("thanks")
-        await message.channel.send(msg)
+    # if message.content.lower() == ('thanks') or message.content.lower() == ('thanks!') or message.content.lower() == ('thanks!!') or message.content.lower() == ('thanks!!!'):
+    #     """
+    #         giphy thanks 
+    #     """
+    #     if not isinstance(message.channel, discord.abc.PrivateChannel):
+    #             await message.delete()
+    #     msg = gifrandom("thanks")
+    #     await message.channel.send(msg)
           
 ########################## Some personal hidden bot commands
     if message.content.lower().endswith('#') or message.content.lower().startswith('tr '):
