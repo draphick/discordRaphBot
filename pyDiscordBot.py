@@ -347,14 +347,47 @@ async def on_message(message):
         getuser = message.author.name.lower()
         splitspace = message.content.lower().split(" ", 1)
         args = splitspace[1].split(" ", 1)
-        writerow('now','now',args[0],args[1],None,None,None,None,addtracksheet,getuser + "tracking")
-        await message.channel.send("New row added!")
-        # lastrow = getgsheet(addtracksheet,getuser + "tracking",True,True)
-        ttype = "\n    Tracking: " + args[0]
-        print(ttype)
-        tnotes = "\n    Notes: " + args[0]
-        print(tnotes)
-        await message.channel.send("Added ---\n```" + ttype + tnotes + "\n```")
+        if len(args) == 2:
+            writerow('now','now',args[0],args[1],None,None,None,None,addtracksheet,"raphtracking")
+            await message.channel.send("New row added!")
+            # lastrow = getgsheet(addtracksheet,getuser + "tracking",True,True)
+            ttype = "\n    Tracking: " + args[0]
+            print(ttype)
+            tnotes = "\n    Notes: " + args[0]
+            print(tnotes)
+            await message.channel.send("Added ---\n```" + ttype + tnotes + "\n```")
+        else:
+            writerow('now','now',args[0],None,None,None,None,None,addtracksheet,getuser + "tracking")
+            await message.channel.send("New row added!")
+            # lastrow = getgsheet(addtracksheet,getuser + "tracking",True,True)
+            ttype = "\n    Tracking: " + args[0]
+            print(ttype)
+            tnotes = "\n    Notes: None"
+            print(tnotes)
+            await message.channel.send("Added ---\n```" + ttype + tnotes + "\n```")
+            
+    if message.content.lower().startswith('jtrack'):
+        getuser = message.author.name.lower()
+        splitspace = message.content.lower().split(" ", 1)
+        args = splitspace[1].split(" ", 1)
+        if len(args) == 2:
+            writerow('now','now',args[0],args[1],None,None,None,None,addtracksheet,"jermztracking")
+            await message.channel.send("New row added!")
+            # lastrow = getgsheet(addtracksheet,getuser + "tracking",True,True)
+            ttype = "\n    Tracking: " + args[0]
+            print(ttype)
+            tnotes = "\n    Notes: " + args[0]
+            print(tnotes)
+            await message.channel.send("Added ---\n```" + ttype + tnotes + "\n```")
+        else:
+            writerow('now','now',args[0],None,None,None,None,None,addtracksheet,getuser + "tracking")
+            await message.channel.send("New row added!")
+            # lastrow = getgsheet(addtracksheet,getuser + "tracking",True,True)
+            ttype = "\n    Tracking: " + args[0]
+            print(ttype)
+            tnotes = "\n    Notes: None"
+            print(tnotes)
+            await message.channel.send("Added ---\n```" + ttype + tnotes + "\n```")
 
     if message.content.lower().startswith('addtrack'):
         getuser = message.author.name.lower()
