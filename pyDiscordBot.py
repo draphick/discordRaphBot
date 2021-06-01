@@ -353,7 +353,7 @@ async def on_message(message):
             # lastrow = getgsheet(addtracksheet,getuser + "tracking",True,True)
             ttype = "\n    Tracking: " + args[0]
             print(ttype)
-            tnotes = "\n    Notes: " + args[0]
+            tnotes = "\n    Notes: " + args[1]
             print(tnotes)
             await message.channel.send("Added ---\n```" + ttype + tnotes + "\n```")
         else:
@@ -376,7 +376,7 @@ async def on_message(message):
             # lastrow = getgsheet(addtracksheet,getuser + "tracking",True,True)
             ttype = "\n    Tracking: " + args[0]
             print(ttype)
-            tnotes = "\n    Notes: " + args[0]
+            tnotes = "\n    Notes: " + args[1]
             print(tnotes)
             await message.channel.send("Added ---\n```" + ttype + tnotes + "\n```")
         else:
