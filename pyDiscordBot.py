@@ -343,6 +343,19 @@ async def on_message(message):
             await message.channel.send('https://www.imdb.com/find?q=' + urlsplit)
             await message.add_reaction("\U0000274E")
     
+    if message.content.lower().startswith('rtrack'):
+        getuser = message.author.name.lower()
+        splitspace = message.content.lower().split(" ", 1)
+        args = splitspace[1].split(" ", 1)
+        writerow('now','now',args[0],args[1],None,None,None,None,addtracksheet,getuser + "tracking")
+        await message.channel.send("New row added!")
+        # lastrow = getgsheet(addtracksheet,getuser + "tracking",True,True)
+        ttype = "\n    Tracking: " + args[0]
+        print(ttype)
+        tnotes = "\n    Notes: " + args[0]
+        print(tnotes)
+        await message.channel.send("Added ---\n```" + ttype + tnotes + "\n```")
+
     if message.content.lower().startswith('addtrack'):
         getuser = message.author.name.lower()
         if getuser == 'raph':
