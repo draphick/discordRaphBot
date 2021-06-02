@@ -359,7 +359,7 @@ async def on_message(message):
                 print(tnotes)
                 await message.channel.send("New row added!\n```" + ttype + tnotes + "\n```")
             else:
-                writerow('now','now',args[0],None,None,None,None,None,addtracksheet,getuser + "tracking")
+                writerow('now','now',args[0],None,None,None,None,None,addtracksheet,"raphtracking")
                 await message.channel.send("New row added!")
                 # lastrow = getgsheet(addtracksheet,getuser + "tracking",True,True)
                 ttype = "\n    Tracking: " + args[0]
@@ -385,7 +385,7 @@ async def on_message(message):
                 print(tnotes)
                 await message.channel.send("New row added! ---\n```" + ttype + tnotes + "\n```")
             else:
-                writerow('now','now',args[0],None,None,None,None,None,addtracksheet,getuser + "tracking")
+                writerow('now','now',args[0],None,None,None,None,None,addtracksheet,"jermztracking")
                 await message.channel.send("New row added!")
                 # lastrow = getgsheet(addtracksheet,getuser + "tracking",True,True)
                 ttype = "\n    Tracking: " + args[0]
