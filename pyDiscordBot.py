@@ -344,50 +344,55 @@ async def on_message(message):
             await message.add_reaction("\U0000274E")
     
     if message.content.lower().startswith('rtrack'):
-        getuser = message.author.name.lower()
-        splitspace = message.content.lower().split(" ", 1)
-        args = splitspace[1].split(" ", 1)
-        if len(args) == 2:
-            writerow('now','now',args[0],args[1],None,None,None,None,addtracksheet,"raphtracking")
-            # await message.channel.send("New row added!")
-            # lastrow = getgsheet(addtracksheet,getuser + "tracking",True,True)
-            ttype = "\n    Tracking: " + args[0]
-            print(ttype)
-            tnotes = "\n    Notes: " + args[1]
-            print(tnotes)
-            await message.channel.send("New row added!\n```" + ttype + tnotes + "\n```")
+        if message.author.name.lower()  != 'raph':
+            await message.channel.send("Wait, you're not Raph.  You can't do this.")
         else:
-            writerow('now','now',args[0],None,None,None,None,None,addtracksheet,getuser + "tracking")
-            await message.channel.send("New row added!")
-            # lastrow = getgsheet(addtracksheet,getuser + "tracking",True,True)
-            ttype = "\n    Tracking: " + args[0]
-            print(ttype)
-            tnotes = "\n    Notes: None"
-            print(tnotes)
-            await message.channel.send("```" + ttype + tnotes + "\n```")
+            splitspace = message.content.lower().split(" ", 1)
+            args = splitspace[1].split(" ", 1)
+            if len(args) == 2:
+                writerow('now','now',args[0],args[1],None,None,None,None,addtracksheet,"raphtracking")
+                # await message.channel.send("New row added!")
+                # lastrow = getgsheet(addtracksheet,getuser + "tracking",True,True)
+                ttype = "\n    Tracking: " + args[0]
+                print(ttype)
+                tnotes = "\n    Notes: " + args[1]
+                print(tnotes)
+                await message.channel.send("New row added!\n```" + ttype + tnotes + "\n```")
+            else:
+                writerow('now','now',args[0],None,None,None,None,None,addtracksheet,getuser + "tracking")
+                await message.channel.send("New row added!")
+                # lastrow = getgsheet(addtracksheet,getuser + "tracking",True,True)
+                ttype = "\n    Tracking: " + args[0]
+                print(ttype)
+                tnotes = "\n    Notes: None"
+                print(tnotes)
+                await message.channel.send("```" + ttype + tnotes + "\n```")
             
     if message.content.lower().startswith('jtrack'):
-        getuser = message.author.name.lower()
-        splitspace = message.content.lower().split(" ", 1)
-        args = splitspace[1].split(" ", 1)
-        if len(args) == 2:
-            writerow('now','now',args[0],args[1],None,None,None,None,addtracksheet,"jermztracking")
-            # await message.channel.send("New row added!")
-            # lastrow = getgsheet(addtracksheet,getuser + "tracking",True,True)
-            ttype = "\n    Tracking: " + args[0]
-            print(ttype)
-            tnotes = "\n    Notes: " + args[1]
-            print(tnotes)
-            await message.channel.send("New row added! ---\n```" + ttype + tnotes + "\n```")
+        if message.author.name.lower()  != 'jermz':
+            await message.channel.send("Wait, you're not Raph.  You can't do this.")
         else:
-            writerow('now','now',args[0],None,None,None,None,None,addtracksheet,getuser + "tracking")
-            await message.channel.send("New row added!")
-            # lastrow = getgsheet(addtracksheet,getuser + "tracking",True,True)
-            ttype = "\n    Tracking: " + args[0]
-            print(ttype)
-            tnotes = "\n    Notes: None"
-            print(tnotes)
-            await message.channel.send("Added ---\n```" + ttype + tnotes + "\n```")
+            getuser = message.author.name.lower()
+            splitspace = message.content.lower().split(" ", 1)
+            args = splitspace[1].split(" ", 1)
+            if len(args) == 2:
+                writerow('now','now',args[0],args[1],None,None,None,None,addtracksheet,"jermztracking")
+                # await message.channel.send("New row added!")
+                # lastrow = getgsheet(addtracksheet,getuser + "tracking",True,True)
+                ttype = "\n    Tracking: " + args[0]
+                print(ttype)
+                tnotes = "\n    Notes: " + args[1]
+                print(tnotes)
+                await message.channel.send("New row added! ---\n```" + ttype + tnotes + "\n```")
+            else:
+                writerow('now','now',args[0],None,None,None,None,None,addtracksheet,getuser + "tracking")
+                await message.channel.send("New row added!")
+                # lastrow = getgsheet(addtracksheet,getuser + "tracking",True,True)
+                ttype = "\n    Tracking: " + args[0]
+                print(ttype)
+                tnotes = "\n    Notes: None"
+                print(tnotes)
+                await message.channel.send("Added ---\n```" + ttype + tnotes + "\n```")
 
     if message.content.lower().startswith('addtrack'):
         getuser = message.author.name.lower()
