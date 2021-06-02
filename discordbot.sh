@@ -10,7 +10,7 @@ else
   # dockershloc="/Users/rgallardo/git/draphick"
   . ../dockerSource.sh
   dockershloc=$dockershloc
-  name='discordraphbot'
+  name='discordraphbotdev'
   echo "Running dev"
 fi
 
@@ -20,7 +20,7 @@ docker run \
   -d \
   --restart=always \
   --name=$name \
-  -v $dockershloc/discordRaphBot:/discordbot:ro \
+  -v $dockershloc/discordRaphBot:/discordbot:rw \
   -v /etc/timezone:/etc/timezone:ro \
   -v /etc/localtime:/etc/localtime:ro \
   -e debug=$debug \
