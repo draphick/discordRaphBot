@@ -370,7 +370,7 @@ async def on_message(message):
             
     if message.content.lower().startswith('jtrack'):
         if message.author.name.lower()  != 'jermz':
-            await message.channel.send("Wait, you're not Raph.  You can't do this.")
+            await message.channel.send("Wait, you're not Jerm.  You can't do this.")
         else:
             getuser = message.author.name.lower()
             splitspace = message.content.lower().split(" ", 1)
