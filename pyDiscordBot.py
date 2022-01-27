@@ -196,7 +196,7 @@ async def on_message(message):
                         await message.channel.send("If this is not what you're looking for, request it again but force it by adding _--force_ at the end of your request.  Like this:\n" + message.content + " --force")
                     else:
                         await message.channel.send(message.author.mention + " Awesome, I'll try looking for that movie!")
-                        await me2.send(message.author.mention + " requested - " + splitmsg[1] + " https://radarr.odrallag.com/add/new")
+                        await me2.send(message.author.mention + " requested - " + splitmsg[1] + " https://radarr.odrallag.com/add/new?term="+ splitmsg[1])
                         await message.add_reaction("\U00002714")
                     # How to use reaction: https://www.reddit.com/r/discordapp/comments/8j1ywl/discordpy_how_to_use_add_reaction/
             else:
@@ -213,7 +213,7 @@ async def on_message(message):
                     await message.channel.send("If this is not what you're looking for, request it again but force it by adding _--force_ at the end of your request.  Like this:\n" + message.content + " --force")
                 else:
                     await message.channel.send(message.author.mention + " Awesome, I'll try looking for that show!!")
-                    await me2.send(message.author.mention + " requested - " + splitmsg[1] + " https://sonarr.odrallag.com/add/new")
+                    await me2.send(message.author.mention + " requested - " + splitmsg[1] + " https://sonarr.odrallag.com/add/new?term="+ splitmsg[1])
                     await message.add_reaction("\U00002714")
         else:
             await message.channel.send(message.author.mention + " Please specify if this is a `TV Show` or `Movie` by including `TV Show` or `Movie` in your request message.")
