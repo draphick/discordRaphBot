@@ -102,7 +102,7 @@ def getplex(title, showmovie, year = None):
                 answer.update({counter: newtitle})
             if showmovie == 'movie' and year == x['year']:
                 counter = counter + 1
-                if x['downloaded'] == "true":
+                if x['downloaded']:
                     newtitle = x['title'] + ' (' + str(x['year']) + ')' + ' _is already downloaded._'
                     answer.update({counter: newtitle})
                 else:
