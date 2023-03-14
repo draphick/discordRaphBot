@@ -99,15 +99,15 @@ def getplex(title, showmovie, year = None):
             if showmovie == 'show':
                 counter = counter + 1
                 newtitle = x['title'] + " on " + x['network'] + ' \n_' + str(x['episodeFileCount']) + " episode(s) already downloaded_"
-                answer.update({counter:newtitle})
+                answer.update({counter: newtitle})
             if showmovie == 'movie' and year == x['year']:
                 counter = counter + 1
-                if x['isAvailable']:
+                if x['downloaded'] == true:
                     newtitle = x['title'] + ' (' + str(x['year']) + ')' + ' _is already downloaded._'
-                    answer.update({counter:newtitle})
+                    answer.update({counter: newtitle})
                 else:
                     newtitle = x['title'] + ' (' + str(x['year']) + ')' + ' _is waiting to download._'
-                    answer.update({counter:newtitle})
+                    answer.update({counter: newtitle})
     return(answer)
 
 def googleauth(sheet,sheettab = 'Sheet1'):
