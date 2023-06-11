@@ -27,8 +27,8 @@ async def on_message(message):
 
 
     if message.content.lower().startswith('dickbutt'):
-        """ 
-            Here's a picture of a dickbutt  
+        """
+            Here's a picture of a dickbutt
             Nothing special here, just added for kicks.
         """
 
@@ -37,7 +37,7 @@ async def on_message(message):
         await message.channel.send(embed=embed)
 
     if message.content.lower().startswith('rgrandom'):
-        """ 
+        """
             Given multiple choices, pick one at randoms and reply back
         """
         fullstr = message.content.lower()
@@ -120,7 +120,7 @@ async def on_message(message):
         await message.channel.send(message.author.mention + " rolled a: " + "**" + str(random.randint(1, dice)) + "**")
 
 
-          
+
 ########################## Some personal hidden bot commands
     if message.content.lower().endswith('#') or message.content.lower().startswith('tr '):
         """
@@ -140,7 +140,7 @@ async def on_message(message):
             if msg.lower() in splitmsg.lower():
                 await message.channel.send("No Tagalog translation found for - " + splitmsg)
             else:
-                await message.channel.send(msg)  
+                await message.channel.send(msg)
                 writerow('now','now','ENGLISH',splitmsg,msg,message.author.mention,None,None,tagalogsheet)
                 # send msg (english translation) send splitmsg (tagalog message)
         elif detect.lang == 'tl':
@@ -149,12 +149,12 @@ async def on_message(message):
             if msg.lower() in splitmsg.lower():
                 await message.channel.send("No English translation found for - " + splitmsg)
             else:
-                await message.channel.send(msg + " - `Attempted Tagalog translation.`")  
+                await message.channel.send(msg + " - `Attempted Tagalog translation.`")
                 # send msg (tagalog translation) send splitmsg (english message)
                 writerow('now','now','TAGALOG',splitmsg,msg,message.author.mention,None,None,tagalogsheet)
 
         else:
-            await message.channel.send("Did not detect english or tagalog.  Try again.")  
+            await message.channel.send("Did not detect english or tagalog.  Try again.")
 
     if message.content.startswith(requestbotid):
         """
@@ -227,59 +227,53 @@ async def on_message(message):
             await message.channel.send("If you need help finding your TV Show or Movie name, try finding it here on IMDB:")
             await message.channel.send('https://www.imdb.com/find?q=' + urlsplit)
             await message.add_reaction("\U0000274E")
-    
+
     if message.content.lower().startswith('rtrack'):
-        if message.author.name.lower()  != 'raph':
-            await message.channel.send("Wait, you're not Raph.  You can't do this.")
+        splitspace = message.content.lower().split(" ", 1)
+        args = splitspace[1].split(" ", 1)
+        if len(args) == 2:
+            writerow('now','now',args[0],args[1],None,None,None,None,addtracksheet,"raphtracking")
+            ttype = "\n    Tracking: " + args[0]
+            print(ttype)
+            tnotes = "\n    Notes: " + args[1]
+            print(tnotes)
+            await message.channel.send("New row added!\n```" + ttype + tnotes + "\n```")
         else:
-            splitspace = message.content.lower().split(" ", 1)
-            args = splitspace[1].split(" ", 1)
-            if len(args) == 2:
-                writerow('now','now',args[0],args[1],None,None,None,None,addtracksheet,"raphtracking")
-                ttype = "\n    Tracking: " + args[0]
-                print(ttype)
-                tnotes = "\n    Notes: " + args[1]
-                print(tnotes)
-                await message.channel.send("New row added!\n```" + ttype + tnotes + "\n```")
-            else:
-                writerow('now','now',args[0],None,None,None,None,None,addtracksheet,"raphtracking")
-                await message.channel.send("New row added!")
-                ttype = "\n    Tracking: " + args[0]
-                print(ttype)
-                tnotes = "\n    Notes: None"
-                print(tnotes)
-                await message.channel.send("```" + ttype + tnotes + "\n```")
-            
+            writerow('now','now',args[0],None,None,None,None,None,addtracksheet,"raphtracking")
+            await message.channel.send("New row added!")
+            ttype = "\n    Tracking: " + args[0]
+            print(ttype)
+            tnotes = "\n    Notes: None"
+            print(tnotes)
+            await message.channel.send("```" + ttype + tnotes + "\n```")
+
     if message.content.lower().startswith('jtrack'):
-        if message.author.name.lower()  != 'jermz':
-            await message.channel.send("Wait, you're not Jerm.  You can't do this.")
+        splitspace = message.content.lower().split(" ", 1)
+        args = splitspace[1].split(" ", 1)
+        if len(args) == 2:
+            writerow('now','now',args[0],args[1],None,None,None,None,addtracksheet,"jermztracking")
+            ttype = "\n    Tracking: " + args[0]
+            print(ttype)
+            tnotes = "\n    Notes: " + args[1]
+            print(tnotes)
+            await message.channel.send("New row added! ---\n```" + ttype + tnotes + "\n```")
         else:
-            splitspace = message.content.lower().split(" ", 1)
-            args = splitspace[1].split(" ", 1)
-            if len(args) == 2:
-                writerow('now','now',args[0],args[1],None,None,None,None,addtracksheet,"jermztracking")
-                ttype = "\n    Tracking: " + args[0]
-                print(ttype)
-                tnotes = "\n    Notes: " + args[1]
-                print(tnotes)
-                await message.channel.send("New row added! ---\n```" + ttype + tnotes + "\n```")
-            else:
-                writerow('now','now',args[0],None,None,None,None,None,addtracksheet,"jermztracking")
-                await message.channel.send("New row added!")
-                ttype = "\n    Tracking: " + args[0]
-                print(ttype)
-                tnotes = "\n    Notes: None"
-                print(tnotes)
-                await message.channel.send("Added ---\n```" + ttype + tnotes + "\n```")
+            writerow('now','now',args[0],None,None,None,None,None,addtracksheet,"jermztracking")
+            await message.channel.send("New row added!")
+            ttype = "\n    Tracking: " + args[0]
+            print(ttype)
+            tnotes = "\n    Notes: None"
+            print(tnotes)
+            await message.channel.send("Added ---\n```" + ttype + tnotes + "\n```")
 
     if message.content.lower().startswith('qq'):
         print(message.guild.members)
- 
+
 
 
 @client.event
 async def on_ready():
-    
+
     if os.environ['debug'] == "y":
         print("Logged in DEV")
     else:
@@ -296,5 +290,3 @@ async def on_ready():
     check_watch_dir(WATCH_DIRECTORY)
     await asyncio.gather(asyncio.ensure_future(watch.run()))
 client.run(TOKEN)
-
-
